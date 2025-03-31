@@ -1,0 +1,18 @@
+.prevNextPageIdevice .iDevice_title,
+.prevNextPageIdevice label,
+.prevNextPageIdevice input[type="text"],
+.prevNextPageIdevice #prevNextPageForm {
+    display: none;
+}
+
+.prevNextButton {
+    padding: 10px 20px;
+    font-size: 20px;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.prevNextPageIdevice .iDevice_content {
+    text-align: center;
+}
