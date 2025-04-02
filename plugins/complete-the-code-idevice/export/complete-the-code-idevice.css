@@ -1,0 +1,6 @@
+/* Anything included in the export folder will be exported if the iDevice is used. */
+.myExampleIdevice .iDevice_content{
+	background: url(example-idevice-logo.png) no-repeat right 0;
+	background-size: 70px auto;
+	padding-right: 90px;
+}
