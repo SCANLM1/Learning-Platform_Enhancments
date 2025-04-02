@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Form Preview</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Load jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<div id="container"></div>
+
+<script>
+    // Render your form directly to the page
+    var html = `
+        <div id="completeCodeForm">
+            <label for="codeInput">Enter Code (use {{ }} to mark blanks):</label>
+            <textarea id="codeInput" rows="10" cols="50"></textarea>
+            
+            <label for="acceptedAnswers">Accepted Answers (comma-separated):</label>
+            <input type="text" id="acceptedAnswers" placeholder="answer1, answer2, ...">
+            
+            <button id="saveCode">Save Code</button>
+        </div>
+    `;
+
+    // Insert the form into the container div
+    document.getElementById('container').innerHTML = html;
+
+    // Adding functionality to the save button
+    $(document).ready(function() {
+        $("#saveCode").on("click", function() {
+            const code = $("#codeInput").val();
+            const answers = $("#acceptedAnswers").val();
+
+            alert(`Code: ${code}\nAccepted Answers: ${answers}`);
+        });
+    });
+</script>
+
+</body>
+</html>
