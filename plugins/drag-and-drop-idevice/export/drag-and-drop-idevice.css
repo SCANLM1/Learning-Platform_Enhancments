@@ -1,6 +1,20 @@
-/* Anything included in the export folder will be exported if the iDevice is used. */
-.myExampleIdevice .iDevice_content{
-	background: url(example-idevice-logo.png) no-repeat right 0;
-	background-size: 70px auto;
-	padding-right: 90px;
+.dragAndDropIdevice .iDevice_title,
+.dragAndDropIdevice label,
+.dragAndDropIdevice input[type="text"],
+.dragAndDropIdevice #nextPageForm {
+    display: none;
+}
+
+/* Style for the next page button */
+.dragAndDropIdevice {
+    padding: 10px 20px;
+    font-size: 20px;
+    cursor: pointer;
+    display: inline-block;
+    text-align: right;
+}
+
+/* Align the button to the right */
+.dragAndDropIdevice .iDevice_content {
+    text-align: right; /* Right-aligns the content, which includes the Next button */
 }
