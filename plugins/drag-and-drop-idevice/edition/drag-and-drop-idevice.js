@@ -8,6 +8,7 @@ var $exeDevice = {
                     <input type="text" id="questionInput" placeholder="Hello yesterday I went to the *shop* then I went *outside*" style="width: 100%; max-width: 1200px; height: 400px;">\
                 </p>\
                 <button type="button" id="generateDragDrop">Generate Drag and Drop</button>\
+                <button id="resetDraggables">Reset Elements</button>\
                 <div id="dragDropArea"></div>\
             </div>\
         ';
@@ -21,37 +22,19 @@ var $exeDevice = {
             $exeDevice.processInput(inputText);
         });
 
+        $("#resetDraggables").on("click", function() {
+            $(".draggable").each(function() {
+                $("#draggableContainer").append($(this));
+                $(this).removeAttr('style');
+            });
+            $(".drop-zone").each(function() {
+                $(this).html('[Drop answer here]');
+            });
+        });
+
         this.getPreviousValues(field);
     },
 
-    // processInput: function(inputText) {
-    //     var matches = [...inputText.matchAll(/\*(.*?)\*/g)];
-    //     var lastIndex = 0;
-    //     var dragDropHtml = '';
-
-    //     matches.forEach(function(match, index) {
-    //         var answer = match[1];
-    //         var start = match.index;
-    //         var end = start + match[0].length;
-
-    //         // Add text before the answer
-    //         dragDropHtml += inputText.substring(lastIndex, start);
-
-    //         // Add drop zone and draggable item
-    //         dragDropHtml += '<div class="drop-zone">[Drop answer here]</div>';
-    //         dragDropHtml += '<div class="draggable" draggable="true" id="draggableAnswer' + index + '">' + answer + '</div>';
-
-    //         lastIndex = end;
-    //     });
-
-    //     // Add remaining text after the last answer
-    //     dragDropHtml += inputText.substring(lastIndex);
-
-    //     $("#dragDropArea").html(dragDropHtml);
-
-    //     // Initialize draggable and droppable functionality
-    //     this.setupDragAndDrop();
-    // },
 
     processInput: function(inputText) {
         var matches = [...inputText.matchAll(/\*(.*?)\*/g)];

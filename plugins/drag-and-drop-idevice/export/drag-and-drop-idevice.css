@@ -18,3 +18,19 @@
 .dragAndDropIdevice .iDevice_content {
     text-align: right; /* Right-aligns the content, which includes the Next button */
 }
+
+.drop-zone {
+    padding: 10px;
+    margin-bottom: 20px; /* Space between drop zones */
+    border: 2px dashed #ccc;
+    min-height: 50px; /* Ensures drop zone is visible even when empty */
+}
+
+
+.draggable {
+    outline: 2px solid #FF5733; /* Red outline */
+    padding: 5px;
+    margin: 10px;
+    background-color: #e0e0e0;
+    cursor: pointer; /* Indicates that the element is draggable */
+}

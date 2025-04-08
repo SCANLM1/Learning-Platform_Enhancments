@@ -26,8 +26,11 @@
     min-height: 50px; /* Ensures drop zone is visible even when empty */
 }
 
+
 .draggable {
-    margin-top: 10px; /* Space above each draggable element */
+    outline: 2px solid #FF5733; /* Red outline */
+    padding: 5px;
+    margin: 10px;
     background-color: #e0e0e0;
-    cursor: pointer;
+    cursor: pointer; /* Indicates that the element is draggable */
 }
