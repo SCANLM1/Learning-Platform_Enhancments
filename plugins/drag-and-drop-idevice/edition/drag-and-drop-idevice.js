@@ -1,104 +1,79 @@
 var $exeDevice = {
     init: function() {
-        var html = '\
-            <div id="myExampleForm">\
-                <div class="exe-idevice-info">' + _("Instructions: Enter the question with answers surrounded by asterisks.") + '</div>\
-                <p>\
-                    <label for="questionInput">Question:</label>\
-                    <input type="text" id="questionInput" placeholder="Hello yesterday I went to the *shop* then I went *outside*" style="width: 100%; max-width: 1200px; height: 400px;">\
-                </p>\
-                <button type="button" id="generateDragDrop">Generate Drag and Drop</button>\
-                <button id="resetDraggables">Reset Elements</button>\
-                <div id="dragDropArea"></div>\
-            </div>\
-        ';
+        var html = `
+            <div id="myExampleForm">
+                <div class="exe-idevice-info">${_("Instructions: Enter the question with answers surrounded by asterisks.")}</div>
+                <p>
+                    <label for="questionInput">Question:</label>
+                    <input type="text" id="questionInput" placeholder="Hello yesterday I went to the *shop* then I went *outside*" style="width: 100%; max-width: 1200px; height: 400px;">
+                </p>
+                <button type="button" id="generateDragDrop">Generate Drag and Drop</button>
+                <div id="dragDropArea"></div>
+            </div>
+        `;
 
-        var field = $("#activeIdevice textarea.jsContentEditor");
-        field.before(html);
+        $("#activeIdevice textarea.jsContentEditor").before(html);
         $exeAuthoring.iDevice.tabs.init("myExampleForm");
 
-        $("#generateDragDrop").on("click", function() {
+        $("#generateDragDrop").click(() => {
             var inputText = $("#questionInput").val();
-            $exeDevice.processInput(inputText);
+            this.processInput(inputText);
         });
 
-        $("#resetDraggables").on("click", function() {
-            $(".draggable").each(function() {
-                $("#draggableContainer").append($(this));
-                $(this).removeAttr('style');
-            });
-            $(".drop-zone").each(function() {
-                $(this).html('[Drop answer here]');
-            });
-        });
-
-        this.getPreviousValues(field);
+        this.getPreviousValues($("#activeIdevice textarea.jsContentEditor"));
     },
-
 
     processInput: function(inputText) {
         var matches = [...inputText.matchAll(/\*(.*?)\*/g)];
         var lastIndex = 0;
-        var dragDropHtml = '';
-        var draggableItemsHtml = '<div id="draggableContainer" style="padding: 20px; border: 1px solid #ccc;">';
+        var dragDropHtml = '<p style="line-height: 1.5;">'; // Ensure line height is enough to contain drop zones
+        var draggableItemsHtml = '<div id="draggableContainer" style="display: flex; gap: 10px; margin-top: 10px;">';
     
-        matches.forEach(function(match, index) {
-            var answer = match[1];
-            var start = match.index;
-            var end = start + match[0].length;
-    
-            // Add text before the answer
-            dragDropHtml += inputText.substring(lastIndex, start);
-    
-            // Add drop zone
-            dragDropHtml += '<div class="drop-zone">[Drop answer here]</div>';
-    
-            // Add draggable item to a separate container
-            draggableItemsHtml += '<div class="draggable" draggable="true" id="draggableAnswer' + index + '">' + answer + '</div>';
-    
-            lastIndex = end;
+        matches.forEach((match, index) => {
+            var placeholder = `<span class="drop-zone" data-correct-answer="draggableAnswer${index}"></span>`;
+            var textPart = inputText.substring(lastIndex, match.index);
+            dragDropHtml += textPart + placeholder;
+            draggableItemsHtml += `<div class="draggable" draggable="true" id="draggableAnswer${index}">${match[1]}</div>`;
+            lastIndex = match.index + match[0].length;
         });
     
-        // Close the draggable container and add remaining text
-        draggableItemsHtml += '</div>';
-        dragDropHtml += inputText.substring(lastIndex);
-    
-        // Combine the zones and draggables in the HTML
-        $("#dragDropArea").html(draggableItemsHtml + dragDropHtml);
-    
-        // Initialize draggable and droppable functionality
+        dragDropHtml += inputText.substring(lastIndex) + '</p>';
+        $("#dragDropArea").html(dragDropHtml); // Adds the text and drop zones to the page
+        $("#dragDropArea").after(draggableItemsHtml); // Adds draggable items below the text
         this.setupDragAndDrop();
     },
+    
+    //GOOD VERSION
 
     setupDragAndDrop: function() {
-        $(".draggable").on("dragstart", function(e) {
+        $(".draggable").on("dragstart", e => {
             e.originalEvent.dataTransfer.setData("text/plain", e.target.id);
         });
 
-        $(".drop-zone").on("dragover", function(e) {
+        $(".drop-zone").on("dragover", e => e.preventDefault()).on("drop", e => {
             e.preventDefault();
-        }).on("drop", function(e) {
-            e.preventDefault();
-            var data = e.originalEvent.dataTransfer.getData("text");
-            var draggableElement = document.getElementById(data);
-            e.target.innerHTML = ''; // Clear the drop zone before appending
-            e.target.appendChild(draggableElement);
+            const data = e.originalEvent.dataTransfer.getData("text");
+            const targetZone = $(e.target).closest('.drop-zone');
+            if (targetZone.children().length === 0 || targetZone.text().includes('[Drop answer here]')) {
+                targetZone.empty().append($(`#${data}`));
+            }
         });
     },
 
     save: function() {
         var inputText = $("#questionInput").val();
-        $exeDevice.processInput(inputText);
-        var res = $("#dragDropArea").html(); // Save the current state of the drag and drop area
-        return res;
+        this.processInput(inputText);
+        return $("#dragDropArea").html();
     },
+    
 
     getPreviousValues: function(field) {
         var content = field.val();
-        if (content != '') {
+        if (content) {
             $("#dragDropArea").html(content);
-            this.setupDragAndDrop(); // Reinitialize drag and drop functionality after loading saved values
+            this.setupDragAndDrop();
         }
     }
-}
+};
+
 
