@@ -21,12 +21,13 @@ var $exeDevice = {
         });
 
         this.getPreviousValues($("#activeIdevice textarea.jsContentEditor"));
+        this.setupDragAndDrop(); // Ensure drag and drop is set up initially
     },
 
     processInput: function(inputText) {
         var matches = [...inputText.matchAll(/\*(.*?)\*/g)];
         var lastIndex = 0;
-        var dragDropHtml = '<p style="line-height: 1.5;">'; // Ensure line height is enough to contain drop zones
+        var dragDropHtml = '<p style="line-height: 1.5;">';
         var draggableItemsHtml = '<div id="draggableContainer" style="display: flex; gap: 10px; margin-top: 10px;">';
     
         matches.forEach((match, index) => {
@@ -38,34 +39,36 @@ var $exeDevice = {
         });
     
         dragDropHtml += inputText.substring(lastIndex) + '</p>';
-        $("#dragDropArea").html(dragDropHtml); // Adds the text and drop zones to the page
-        $("#dragDropArea").after(draggableItemsHtml); // Adds draggable items below the text
+        draggableItemsHtml += '</div>';
+        
+        $("#dragDropArea").html(dragDropHtml + draggableItemsHtml);
         this.setupDragAndDrop();
     },
-    
-    //GOOD VERSION
 
     setupDragAndDrop: function() {
-        $(".draggable").on("dragstart", e => {
+        $(document).on("dragstart", ".draggable", function(e) {
             e.originalEvent.dataTransfer.setData("text/plain", e.target.id);
         });
 
-        $(".drop-zone").on("dragover", e => e.preventDefault()).on("drop", e => {
+        $(document).on("dragover", ".drop-zone", function(e) {
+            e.preventDefault();
+        });
+
+        $(document).on("drop", ".drop-zone", function(e) {
             e.preventDefault();
             const data = e.originalEvent.dataTransfer.getData("text");
             const targetZone = $(e.target).closest('.drop-zone');
-            if (targetZone.children().length === 0 || targetZone.text().includes('[Drop answer here]')) {
-                targetZone.empty().append($(`#${data}`));
-            }
+            targetZone.empty().append($(`#${data}`));
         });
     },
 
     save: function() {
         var inputText = $("#questionInput").val();
         this.processInput(inputText);
-        return $("#dragDropArea").html();
+        $("#dragDropArea").html(); // Save the current state
+        this.setupDragAndDrop(); // Re-setup drag and drop after saving state to ensure functionality
+        return $("#dragDropArea").html(); // Return the saved state
     },
-    
 
     getPreviousValues: function(field) {
         var content = field.val();
@@ -75,5 +78,3 @@ var $exeDevice = {
         }
     }
 };
-
-
