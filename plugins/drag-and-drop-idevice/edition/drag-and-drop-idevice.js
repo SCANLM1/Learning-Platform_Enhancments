@@ -1,80 +1,113 @@
 var $exeDevice = {
-    init: function() {
-        var html = `
+    init: function () {
+        const html = `
             <div id="myExampleForm">
                 <div class="exe-idevice-info">${_("Instructions: Enter the question with answers surrounded by asterisks.")}</div>
                 <p>
                     <label for="questionInput">Question:</label>
-                    <input type="text" id="questionInput" placeholder="Hello yesterday I went to the *shop* then I went *outside*" style="width: 100%; max-width: 1200px; height: 400px;">
+                    <textarea id="questionInput" placeholder="Hello yesterday I went to the *shop* then I went *outside*" style="width: 100%; height: 120px;"></textarea>
                 </p>
                 <button type="button" id="generateDragDrop">Generate Drag and Drop</button>
                 <div id="dragDropArea"></div>
             </div>
         `;
 
-        $("#activeIdevice textarea.jsContentEditor").before(html);
+        const field = $("#activeIdevice textarea.jsContentEditor");
+        field.before(html);
+        field.hide(); // ✅ hide default textarea
         $exeAuthoring.iDevice.tabs.init("myExampleForm");
 
         $("#generateDragDrop").click(() => {
-            var inputText = $("#questionInput").val();
+            const inputText = $("#questionInput").val();
             this.processInput(inputText);
         });
 
-        this.getPreviousValues($("#activeIdevice textarea.jsContentEditor"));
-        this.setupDragAndDrop(); // Ensure drag and drop is set up initially
+        this.getPreviousValues(field);
     },
 
-    processInput: function(inputText) {
-        var matches = [...inputText.matchAll(/\*(.*?)\*/g)];
-        var lastIndex = 0;
-        var dragDropHtml = '<p style="line-height: 1.5;">';
-        var draggableItemsHtml = '<div id="draggableContainer" style="display: flex; gap: 10px; margin-top: 10px;">';
-    
+    processInput: function (inputText) {
+        const matches = [...inputText.matchAll(/\*(.*?)\*/g)];
+        let lastIndex = 0;
+        const uid = 'dd' + Date.now(); // Unique prefix to prevent ID collision
+
+        $("#dragDropArea").empty();
+
+        let dragDropHtml = `<div class="dragdrop-idevice" data-uid="${uid}"><p style="line-height: 1.5;">`;
+        let draggableItemsHtml = `<div id="${uid}_draggableContainer" style="display: flex; gap: 10px; margin-top: 10px;">`;
+
         matches.forEach((match, index) => {
-            var placeholder = `<span class="drop-zone" data-correct-answer="draggableAnswer${index}"></span>`;
-            var textPart = inputText.substring(lastIndex, match.index);
-            dragDropHtml += textPart + placeholder;
-            draggableItemsHtml += `<div class="draggable" draggable="true" id="draggableAnswer${index}">${match[1]}</div>`;
+            const textBefore = inputText.substring(lastIndex, match.index);
+            const answer = match[1];
+            const dragId = `${uid}_draggableAnswer${index}`;
+
+            dragDropHtml += `${textBefore}<span class="drop-zone" data-correct-answer="${dragId}"></span>`;
+            draggableItemsHtml += `<div class="draggable" draggable="true" id="${dragId}">${answer}</div>`;
+
             lastIndex = match.index + match[0].length;
         });
-    
-        dragDropHtml += inputText.substring(lastIndex) + '</p>';
-        draggableItemsHtml += '</div>';
-        
-        $("#dragDropArea").html(dragDropHtml + draggableItemsHtml);
+
+        dragDropHtml += inputText.substring(lastIndex) + '</p>' + draggableItemsHtml + '</div></div>';
+
+        $("#dragDropArea").html(dragDropHtml);
         this.setupDragAndDrop();
     },
 
-    setupDragAndDrop: function() {
-        $(document).on("dragstart", ".draggable", function(e) {
-            e.originalEvent.dataTransfer.setData("text/plain", e.target.id);
+    save: function () {
+        const inputText = $("#questionInput").val();
+        const matches = [...inputText.matchAll(/\*(.*?)\*/g)];
+        let lastIndex = 0;
+        const uid = 'dd' + Date.now();
+
+        let dragDropHtml = `<div class="dragdrop-idevice" data-uid="${uid}"><p style="line-height: 1.5;">`;
+        let draggableItemsHtml = `<div id="${uid}_draggableContainer" style="display: flex; gap: 10px; margin-top: 10px;">`;
+
+        matches.forEach((match, index) => {
+            const textBefore = inputText.substring(lastIndex, match.index);
+            const answer = match[1];
+            const dragId = `${uid}_draggableAnswer${index}`;
+
+            dragDropHtml += `${textBefore}<span class="drop-zone" data-correct-answer="${dragId}"></span>`;
+            draggableItemsHtml += `<div class="draggable" draggable="true" id="${dragId}">${answer}</div>`;
+
+            lastIndex = match.index + match[0].length;
         });
 
-        $(document).on("dragover", ".drop-zone", function(e) {
-            e.preventDefault();
-        });
+        dragDropHtml += inputText.substring(lastIndex) + '</p>' + draggableItemsHtml + '</div></div>';
 
-        $(document).on("drop", ".drop-zone", function(e) {
-            e.preventDefault();
-            const data = e.originalEvent.dataTransfer.getData("text");
-            const targetZone = $(e.target).closest('.drop-zone');
-            targetZone.empty().append($(`#${data}`));
-        });
+        // Save to the hidden editor field
+        $("#activeIdevice textarea.jsContentEditor").val(dragDropHtml);
+        return dragDropHtml;
     },
 
-    save: function() {
-        var inputText = $("#questionInput").val();
-        this.processInput(inputText);
-        $("#dragDropArea").html(); // Save the current state
-        this.setupDragAndDrop(); // Re-setup drag and drop after saving state to ensure functionality
-        return $("#dragDropArea").html(); // Return the saved state
-    },
-
-    getPreviousValues: function(field) {
-        var content = field.val();
+    getPreviousValues: function (field) {
+        const content = field.val();
         if (content) {
             $("#dragDropArea").html(content);
             this.setupDragAndDrop();
         }
+    },
+
+    setupDragAndDrop: function () {
+        $(document).off("dragstart.drag").on("dragstart.drag", ".draggable", function (e) {
+            e.originalEvent.dataTransfer.setData("text/plain", e.target.id);
+        });
+
+        $(document).off("dragover.drag drop.drag");
+
+        $(document).on("dragover.drag", ".drop-zone", function (e) {
+            e.preventDefault();
+        });
+
+        $(document).on("drop.drag", ".drop-zone", function (e) {
+            e.preventDefault();
+            const data = e.originalEvent.dataTransfer.getData("text/plain");
+            const $dragged = $("#" + data);
+            const targetZone = $(e.target).closest(".drop-zone");
+
+            // Make sure it's from this iDevice
+            if ($(this).closest(".dragdrop-idevice").find(`#${data}`).length > 0) {
+                targetZone.empty().append($dragged);
+            }
+        });
     }
 };
