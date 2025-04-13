@@ -14,7 +14,7 @@ var $exeDevice = {
 
         const field = $("#activeIdevice textarea.jsContentEditor");
         field.before(html);
-        field.hide(); // ✅ hide default textarea
+        field.hide(); //hide default textarea
         $exeAuthoring.iDevice.tabs.init("myExampleForm");
 
         $("#generateDragDrop").click(() => {
@@ -61,6 +61,7 @@ var $exeDevice = {
         let dragDropHtml = `<div class="dragdrop-idevice" data-uid="${uid}"><p style="line-height: 1.5;">`;
         let draggableItemsHtml = `<div id="${uid}_draggableContainer" style="display: flex; gap: 10px; margin-top: 10px;">`;
 
+        
         matches.forEach((match, index) => {
             const textBefore = inputText.substring(lastIndex, match.index);
             const answer = match[1];
@@ -74,7 +75,7 @@ var $exeDevice = {
 
         dragDropHtml += inputText.substring(lastIndex) + '</p>' + draggableItemsHtml + '</div></div>';
 
-        // Save to the hidden editor field
+       
         $("#activeIdevice textarea.jsContentEditor").val(dragDropHtml);
         return dragDropHtml;
     },
@@ -104,7 +105,7 @@ var $exeDevice = {
             const $dragged = $("#" + data);
             const targetZone = $(e.target).closest(".drop-zone");
 
-            // Make sure it's from this iDevice
+            
             if ($(this).closest(".dragdrop-idevice").find(`#${data}`).length > 0) {
                 targetZone.empty().append($dragged);
             }

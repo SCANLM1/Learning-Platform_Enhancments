@@ -1,81 +1,95 @@
 var $exeDeviceExport = {
     init: function () {
-        // ✅ SCORM API init (safe in preview/export)
-        if (typeof pipwerks !== "undefined" && pipwerks.SCORM) {
-            pipwerks.SCORM.init();
-        }
+        document.querySelectorAll(".dragdrop-idevice").forEach(function (container) {
+            const dropZoneEls = container.querySelectorAll(".drop-zone");
+            const draggableEls = container.querySelectorAll(".draggable");
 
-        this.setupExportDragAndDrop();
-    },
+            // Reconstruct the interface from saved HTML
+            const textWrapper = container.querySelector("p");
+            const draggableContainer = container.querySelector("#draggableContainer");
 
-    setupExportDragAndDrop: function () {
-        $(".dragdrop-idevice").each(function () {
-            const $container = $(this);
+            // Preserve original text
+            const originalHTML = textWrapper?.innerHTML || "";
+            const draggables = Array.from(draggableEls).map(el => {
+                el.setAttribute("draggable", "true");
+                el.classList.add("draggable");
+                return el.outerHTML;
+            });
 
-            // Make draggables draggable
-            $container.find(".draggable").attr("draggable", "true");
+            const ui = `
+                <p>${originalHTML}</p>
+                <div id="draggableContainer" style="display: flex; gap: 10px; margin-top: 10px;">
+                    ${draggables.join("\n")}
+                </div>
+                <button class="check-answers-btn" style="margin-top: 10px;">Check Answers</button>
+                <div class="feedback" style="margin-top: 8px;"></div>
+            `;
+
+            container.innerHTML = ui;
+
+            const containerEl = container;
+            const checkBtn = container.querySelector(".check-answers-btn");
+            const feedbackBox = container.querySelector(".feedback");
 
             // Drag start
-            $container.on("dragstart", ".draggable", function (e) {
-                e.originalEvent.dataTransfer.setData("text/plain", e.target.id);
-            });
-
-            // Allow drop
-            $container.on("dragover", ".drop-zone", function (e) {
-                e.preventDefault();
-            });
-
-            // Handle drop
-            $container.on("drop", ".drop-zone", function (e) {
-                e.preventDefault();
-                const data = e.originalEvent.dataTransfer.getData("text");
-                const $dragged = $("#" + data);
-
-                // Prevent dragging from another iDevice
-                if ($container.find(`#${data}`).length > 0) {
-                    $(this).empty().append($dragged);
+            containerEl.addEventListener("dragstart", function (e) {
+                if (e.target.classList.contains("draggable")) {
+                    e.dataTransfer.setData("text/plain", e.target.id);
                 }
             });
 
-            // Add check button and feedback area (if not already added)
-            if (!$container.find(".check-answers-btn").length) {
-                $container.append(`
-                    <button class="check-answers-btn" style="margin-top: 10px;">Check Answers</button>
-                    <div class="feedback" style="margin-top: 8px;"></div>
-                `);
-            }
+            // Drag over
+            containerEl.addEventListener("dragover", function (e) {
+                if (e.target.classList.contains("drop-zone")) {
+                    e.preventDefault();
+                }
+            });
 
-            // Check button logic
-            $container.on("click", ".check-answers-btn", function () {
+            // Drop
+            containerEl.addEventListener("drop", function (e) {
+                if (e.target.classList.contains("drop-zone")) {
+                    e.preventDefault();
+                    const id = e.dataTransfer.getData("text/plain");
+                    const dragged = document.getElementById(id);
+
+                    if (dragged && containerEl.contains(dragged)) {
+                        e.target.innerHTML = "";
+                        e.target.appendChild(dragged);
+                    }
+                }
+            });
+
+            // Check logic
+            checkBtn.addEventListener("click", function () {
                 let allCorrect = true;
 
-                $container.find(".drop-zone").each(function () {
-                    const expectedId = $(this).attr("data-correct-answer");
-                    const actualChild = $(this).children(".draggable");
+                containerEl.querySelectorAll(".drop-zone").forEach(zone => {
+                    const expectedId = zone.getAttribute("data-correct-answer");
+                    const dragged = zone.querySelector(".draggable");
 
-                    if (actualChild.length && actualChild.attr("id") === expectedId) {
-                        $(this).css({
-                            border: "2px solid green",
-                            backgroundColor: "#eaffea"
-                        });
+                    if (dragged && dragged.id === expectedId) {
+                        zone.style.border = "2px solid green";
+                        zone.style.backgroundColor = "#eaffea";
                     } else {
-                        $(this).css({
-                            border: "2px solid red",
-                            backgroundColor: "#ffeaea"
-                        });
+                        zone.style.border = "2px solid red";
+                        zone.style.backgroundColor = "#ffeaea";
                         allCorrect = false;
                     }
                 });
 
-                const feedback = $container.find(".feedback");
                 if (allCorrect) {
-                    feedback.text("✅ All correct!");
-                    finishCourse(true); // ✅ Marks SCORM completion
+                    feedbackBox.textContent = "✅ All correct!";
+                    finishCourse(true);
                 } else {
-                    feedback.text("❌ Some answers are incorrect.");
+                    feedbackBox.textContent = "❌ Some answers are incorrect.";
                 }
             });
         });
+
+        // SCORM init if available
+        if (typeof pipwerks !== "undefined" && pipwerks.SCORM) {
+            pipwerks.SCORM.init();
+        }
     }
 };
 
@@ -83,33 +97,20 @@ $(function () {
     $exeDeviceExport.init();
 });
 
-// ✅ SCORM-friendly course completion handler (preview-safe)
+// ✅ SCORM-safe completion function
 function finishCourse(isFinalPackage = false) {
     try {
+        if (typeof computeTime === "function") computeTime();
+
         if (typeof pipwerks !== "undefined" && pipwerks.SCORM) {
-            // Optional: include time tracking if SCOFunctions.js provides computeTime()
-            if (typeof computeTime === "function") computeTime();
-
             pipwerks.SCORM.SetCompletionStatus("completed");
-
-            if (isFinalPackage) {
-                pipwerks.SCORM.SetSuccessStatus("passed");
-            } else {
-                pipwerks.SCORM.SetSuccessStatus("incomplete");
-            }
-
+            pipwerks.SCORM.SetSuccessStatus(isFinalPackage ? "passed" : "incomplete");
             pipwerks.SCORM.save();
             pipwerks.SCORM.quit();
-
-            if (isFinalPackage) {
-                console.log("✅ Course completed!");
-            } else {
-                console.log("✅ SCORM package completed.");
-            }
         } else {
-            console.warn("⚠️ SCORM API not available. Skipping SCORM completion call.");
+            console.warn("SCORM not available.");
         }
     } catch (err) {
-        console.error("⚠️ Error during SCORM finish:", err);
+        console.error("Error in finishCourse:", err);
     }
 }
