@@ -97,7 +97,7 @@ $(function () {
     $exeDeviceExport.init();
 });
 
-// ✅ SCORM-safe completion function
+//SCORM-safe completion function
 function finishCourse(isFinalPackage = false) {
     try {
         if (typeof computeTime === "function") computeTime();
