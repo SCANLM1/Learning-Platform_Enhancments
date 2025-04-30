@@ -16,12 +16,16 @@ var $exeDeviceExport = {
                 return el.outerHTML;
             });
 
+            // Store original draggable HTML for reset
+            const originalDraggablesHTML = [...draggables];
+
             const ui = `
                 <p>${originalHTML}</p>
                 <div id="draggableContainer" style="display: flex; gap: 10px; margin-top: 10px;">
                     ${draggables.join("\n")}
                 </div>
                 <button class="check-answers-btn" style="margin-top: 10px;">Check Answers</button>
+                <button class="reset-answers-btn" style="margin-top: 10px; margin-left: 10px;">Reset</button>
                 <div class="feedback" style="margin-top: 8px;"></div>
             `;
 
@@ -29,7 +33,9 @@ var $exeDeviceExport = {
 
             const containerEl = container;
             const checkBtn = container.querySelector(".check-answers-btn");
+            const resetBtn = container.querySelector(".reset-answers-btn");
             const feedbackBox = container.querySelector(".feedback");
+            const dragContainer = container.querySelector("#draggableContainer");
 
             // Drag start
             containerEl.addEventListener("dragstart", function (e) {
@@ -83,6 +89,28 @@ var $exeDeviceExport = {
                 } else {
                     feedbackBox.textContent = "❌ Some answers are incorrect.";
                 }
+            });
+
+            // Reset logic (new)
+            resetBtn.addEventListener("click", function () {
+                // Clear drop-zones
+                containerEl.querySelectorAll(".drop-zone").forEach(zone => {
+                    zone.innerHTML = "";
+                    zone.style.border = "";
+                    zone.style.backgroundColor = "";
+                });
+
+                // Restore draggables
+                dragContainer.innerHTML = originalDraggablesHTML.join("\n");
+
+                // Reapply drag attributes
+                dragContainer.querySelectorAll(".draggable").forEach(el => {
+                    el.setAttribute("draggable", "true");
+                    el.classList.add("draggable");
+                });
+
+                // Clear feedback
+                feedbackBox.textContent = "";
             });
         });
 

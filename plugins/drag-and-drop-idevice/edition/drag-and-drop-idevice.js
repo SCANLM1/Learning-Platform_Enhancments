@@ -1,20 +1,23 @@
 var $exeDevice = {
+    originalDraggables: [],
+
     init: function () {
         const html = `
             <div id="myExampleForm">
-                <div class="exe-idevice-info">${_("Instructions: Enter the question with answers surrounded by asterisks.")}</div>
+                <div class="exe-idevice-info">${_("Instructions: Enter the question with answers surrounded by double square brackets [[ ]]")}</div>
                 <p>
                     <label for="questionInput">Question:</label>
-                    <textarea id="questionInput" placeholder="Hello yesterday I went to the *shop* then I went *outside*" style="width: 100%; height: 120px;"></textarea>
+                    <textarea id="questionInput" placeholder="CSS Stands for [[Cascading Style Sheets]] and HTML stands for [[Hyper Text Markup Language]]" style="width: 100%; height: 120px;"></textarea>
                 </p>
                 <button type="button" id="generateDragDrop">Generate Drag and Drop</button>
+                <button type="button" id="resetDragDrop">Reset Elements</button>
                 <div id="dragDropArea"></div>
             </div>
         `;
 
         const field = $("#activeIdevice textarea.jsContentEditor");
         field.before(html);
-        field.hide(); //hide default textarea
+        field.hide(); // hide default textarea
         $exeAuthoring.iDevice.tabs.init("myExampleForm");
 
         $("#generateDragDrop").click(() => {
@@ -22,18 +25,23 @@ var $exeDevice = {
             this.processInput(inputText);
         });
 
+        $("#resetDragDrop").click(() => {
+            this.resetDraggables();
+        });
+
         this.getPreviousValues(field);
     },
 
     processInput: function (inputText) {
-        const matches = [...inputText.matchAll(/\*(.*?)\*/g)];
+        const matches = [...inputText.matchAll(/\[\[(.*?)\]\]/g)];
         let lastIndex = 0;
-        const uid = 'dd' + Date.now(); // Unique prefix to prevent ID collision
+        const uid = 'dd' + Date.now();
 
         $("#dragDropArea").empty();
+        this.originalDraggables = [];
 
         let dragDropHtml = `<div class="dragdrop-idevice" data-uid="${uid}"><p style="line-height: 1.5;">`;
-        let draggableItemsHtml = `<div id="${uid}_draggableContainer" style="display: flex; gap: 10px; margin-top: 10px;">`;
+        let draggableItemsHtml = `<div id="${uid}_draggableContainer" class="draggable-container" style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">`;
 
         matches.forEach((match, index) => {
             const textBefore = inputText.substring(lastIndex, match.index);
@@ -42,6 +50,8 @@ var $exeDevice = {
 
             dragDropHtml += `${textBefore}<span class="drop-zone" data-correct-answer="${dragId}"></span>`;
             draggableItemsHtml += `<div class="draggable" draggable="true" id="${dragId}">${answer}</div>`;
+
+            this.originalDraggables.push(dragId);
 
             lastIndex = match.index + match[0].length;
         });
@@ -52,16 +62,23 @@ var $exeDevice = {
         this.setupDragAndDrop();
     },
 
+    resetDraggables: function () {
+        const container = $(".draggable-container");
+        this.originalDraggables.forEach(id => {
+            const el = $("#" + id);
+            if (el.length) container.append(el);
+        });
+    },
+
     save: function () {
         const inputText = $("#questionInput").val();
-        const matches = [...inputText.matchAll(/\*(.*?)\*/g)];
+        const matches = [...inputText.matchAll(/\[\[(.*?)\]\]/g)];
         let lastIndex = 0;
         const uid = 'dd' + Date.now();
 
         let dragDropHtml = `<div class="dragdrop-idevice" data-uid="${uid}"><p style="line-height: 1.5;">`;
-        let draggableItemsHtml = `<div id="${uid}_draggableContainer" style="display: flex; gap: 10px; margin-top: 10px;">`;
+        let draggableItemsHtml = `<div id="${uid}_draggableContainer" class="draggable-container" style="display: flex; gap: 10px; margin-top: 10px;">`;
 
-        
         matches.forEach((match, index) => {
             const textBefore = inputText.substring(lastIndex, match.index);
             const answer = match[1];
@@ -75,7 +92,6 @@ var $exeDevice = {
 
         dragDropHtml += inputText.substring(lastIndex) + '</p>' + draggableItemsHtml + '</div></div>';
 
-       
         $("#activeIdevice textarea.jsContentEditor").val(dragDropHtml);
         return dragDropHtml;
     },
@@ -105,8 +121,7 @@ var $exeDevice = {
             const $dragged = $("#" + data);
             const targetZone = $(e.target).closest(".drop-zone");
 
-            
-            if ($(this).closest(".dragdrop-idevice").find(`#${data}`).length > 0) {
+            if ($dragged.length && targetZone.length) {
                 targetZone.empty().append($dragged);
             }
         });
