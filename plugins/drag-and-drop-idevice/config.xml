@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <idevice>
 	<title>Drag and Drop</title>
-	<css-class>dragAndDropIdevice</css-class>
+	<css-class>dragdrop-idevice</css-class>
 	<category>Navigation</category>	
 </idevice>
 
