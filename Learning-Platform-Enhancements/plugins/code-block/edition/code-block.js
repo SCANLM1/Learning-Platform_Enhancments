@@ -1,140 +1,93 @@
 /**
- * Minimal CodeBlock iDevice (edition code) with CodeMirror test functionality
- *
- * Released under Attribution-ShareAlike 4.0 International License.
- * Author: Ignacio Gros (http://gros.es/) for http://exelearning.net/
- *
- * License: http://creativecommons.org/licenses/by-sa/4.0/
+ * CodeBlock Edition iDevice
  */
 var $exeDevice = {
-  
-	// i18n settings
-	i18n : {
-	  name : _("CodeBlock")
-	},
-	
-	// Reference for our CodeMirror instance
+	i18n: { name: _("CodeBlock") },
 	codeMirrorEditor: null,
-	
-	init : function(){
+  
+	init: function() {
 	  var self = this;
-	  
-	  // Dynamically load the header dependencies if not already loaded
-	  this.loadDependencies(function(){
-		
-		// Build the simple form containing the enhanced code editor area and a test button
+	  this.loadDependencies(function() {
+		// 1) Build the CodeMirror form
 		var html = '\
 		  <div id="codeBlockForm">\
-			<div class="exe-idevice-info">'+ _("Edit your code below:") +'</div>\
+			<div class="exe-idevice-info">'+ _("Code you want to present: ") +'</div>\
 			<textarea id="codeBlockEditor"></textarea>\
-			<br><button id="testCodeMirror">'+ _("Test CodeMirror") +'</button>\
 		  </div>';
-		
-		// Insert the form before the hidden TEXTAREA (that holds the saved content)
+		// 2) Insert it before the hidden textarea
 		var field = $("#activeIdevice textarea.jsContentEditor");
 		field.before(html);
-		
-		// (Optional) If using tabs, initialize them – otherwise, this may be omitted.
-		if (typeof $exeAuthoring !== "undefined" && $exeAuthoring.iDevice && $exeAuthoring.iDevice.tabs) {
-		  $exeAuthoring.iDevice.tabs.init("codeBlockForm");
-		}
-		
-		// Restore previous content (if any)
+		// 3) Restore saved code (if any)
 		self.getPreviousValues(field);
-		
-		// --- Initialize CodeMirror on the codeBlockEditor textarea ---
-		var codeArea = document.getElementById("codeBlockEditor");
-		if (codeArea) {
-		  self.codeMirrorEditor = CodeMirror.fromTextArea(codeArea, {
-			lineNumbers: true,             // Enable line numbers
-			mode: "javascript",            // Set language mode (change if needed)
-			theme: "monokai",              // Use the 'monokai' theme for a code feel
-			lineWrapping: true             // Enable line wrapping
+		// 4) Init CodeMirror
+		var area = document.getElementById("codeBlockEditor");
+		if (area) {
+		  self.codeMirrorEditor = CodeMirror.fromTextArea(area, {
+			lineNumbers: true,
+			mode: "javascript",
+			theme: "monokai",
+			lineWrapping: true
 		  });
 		}
-		
-		// Add a click event to the Test button to display CodeMirror content
-		$("#testCodeMirror").click(function(){
-		  if (self.codeMirrorEditor) {
-			alert("Current CodeMirror content:\n" + self.codeMirrorEditor.getValue());
-		  } else {
-			alert("CodeMirror editor is not initialized.");
-		  }
-		});
 	  });
 	},
-	
-	// Method to dynamically load dependencies into the document head
-	loadDependencies: function(callback){
-	  var head = document.getElementsByTagName("head")[0];
-	  // Check if CodeMirror is already loaded
+  
+	loadDependencies: function(cb) {
+	  var head = document.head;
 	  if (typeof CodeMirror === "undefined") {
-		
-		// Create and append CodeMirror Core CSS
-		var cmCss = document.createElement("link");
-		cmCss.rel = "stylesheet";
-		cmCss.href = "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.1/codemirror.min.css";
-		head.appendChild(cmCss);
-		
-		// Create and append CodeMirror Monokai Theme CSS
-		var themeCss = document.createElement("link");
-		themeCss.rel = "stylesheet";
-		themeCss.href = "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.1/theme/monokai.min.css";
-		head.appendChild(themeCss);
-		
-		// Create and append CodeMirror Core JavaScript
-		var script = document.createElement("script");
-		script.src = "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.1/codemirror.min.js";
-		script.onload = function(){
-		  // Load the JavaScript mode for CodeMirror after the core has loaded
-		  var modeScript = document.createElement("script");
-		  modeScript.src = "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.1/mode/javascript/javascript.min.js";
-		  modeScript.onload = function(){
-			callback();
-		  };
-		  head.appendChild(modeScript);
+		// Core CSS
+		var l1 = document.createElement("link");
+		l1.rel = "stylesheet";
+		l1.href = "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.1/codemirror.min.css";
+		head.appendChild(l1);
+		// Monokai theme
+		var l2 = document.createElement("link");
+		l2.rel = "stylesheet";
+		l2.href = "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.1/theme/monokai.min.css";
+		head.appendChild(l2);
+		// Core JS
+		var s1 = document.createElement("script");
+		s1.src = "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.1/codemirror.min.js";
+		s1.onload = function() {
+		  // JavaScript mode
+		  var s2 = document.createElement("script");
+		  s2.src = "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.1/mode/javascript/javascript.min.js";
+		  s2.onload = cb;
+		  head.appendChild(s2);
 		};
-		head.appendChild(script);
-		
-	  } else {
-		// Already loaded—execute the callback immediately
-		callback();
-	  }
+		head.appendChild(s1);
+	  } else cb();
 	},
-	
-	save : function(){
-	  // Gather content from the CodeMirror editor (if available)
+  
+	save: function() {
 	  var res = "";
 	  if (this.codeMirrorEditor) {
-		var codeContent = this.codeMirrorEditor.getValue();
-		if(codeContent !== ""){
-		  // Wrap the content in a container with a specific class for styling
-		  res += '<div class="exe-code-block"><pre>' + codeContent + '</pre></div>';
-		}
+		var c = this.codeMirrorEditor.getValue();
+		if (c) res = '<div class="exe-code-block"><pre>' + c + '</pre></div>';
 	  }
+	  // Store into the hidden editor field
+	  $("#activeIdevice textarea.jsContentEditor").val(res);
 	  return res;
 	},
-	
-	getPreviousValues : function(field){
-	  // Retrieve previously saved content (if available)
+  
+	getPreviousValues: function(field) {
 	  var content = field.val();
-	  if (content !== ''){
-		var wrapper = $("<div></div>");
-		wrapper.html(content);
-		var codeBlock = $("div.exe-code-block pre", wrapper).eq(0);
-		if(codeBlock.length === 1){
-		  // If CodeMirror is initialized, set its value
-		  if(this.codeMirrorEditor){
-			this.codeMirrorEditor.setValue(codeBlock.text());
-		  } else {
-			// Fallback: set the raw textarea value
-			$("#codeBlockEditor").val(codeBlock.text());
-		  }
+	  if (content) {
+		var wrapper = $("<div>").html(content);
+		var pre = wrapper.find("div.exe-code-block pre").get(0);
+		if (pre) {
+		  var text = pre.textContent;
+		  $("#codeBlockEditor").val(text);
 		}
 	  }
 	}
   };
   
-  // Dummy translation function if not defined elsewhere
-  function _(str) { return str; }
+  // Translation stub
+  function _(s){ return s; }
+  
+  // Kick off edition
+  $(document).ready(function(){
+	$exeDevice.init();
+  });
   
