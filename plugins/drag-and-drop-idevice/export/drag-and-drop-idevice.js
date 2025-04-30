@@ -19,6 +19,17 @@ var $exeDeviceExport = {
             // Store original draggable HTML for reset
             const originalDraggablesHTML = [...draggables];
 
+            // Track stats
+            const stats = {
+                clicks: 0,
+                drags: 0,
+                drops: 0,
+                checkAttempts: 0,
+                failedAttempts: 0,
+                startTime: Date.now(),
+                totalTime: 0
+            };
+
             const ui = `
                 <p>${originalHTML}</p>
                 <div id="draggableContainer" style="display: flex; gap: 10px; margin-top: 10px;">
@@ -27,6 +38,7 @@ var $exeDeviceExport = {
                 <button class="check-answers-btn" style="margin-top: 10px;">Check Answers</button>
                 <button class="reset-answers-btn" style="margin-top: 10px; margin-left: 10px;">Reset</button>
                 <div class="feedback" style="margin-top: 8px;"></div>
+                <div class="stats-display" style="margin-top: 12px; font-family: monospace; background: #f9f9f9; padding: 8px; border: 1px solid #ccc;"></div>
             `;
 
             container.innerHTML = ui;
@@ -35,12 +47,21 @@ var $exeDeviceExport = {
             const checkBtn = container.querySelector(".check-answers-btn");
             const resetBtn = container.querySelector(".reset-answers-btn");
             const feedbackBox = container.querySelector(".feedback");
+            const statsBox = container.querySelector(".stats-display");
             const dragContainer = container.querySelector("#draggableContainer");
+
+            // Click tracker
+            containerEl.addEventListener("click", function () {
+                stats.clicks++;
+                updateStatsDisplay();
+            });
 
             // Drag start
             containerEl.addEventListener("dragstart", function (e) {
                 if (e.target.classList.contains("draggable")) {
+                    stats.drags++;
                     e.dataTransfer.setData("text/plain", e.target.id);
+                    updateStatsDisplay();
                 }
             });
 
@@ -61,12 +82,15 @@ var $exeDeviceExport = {
                     if (dragged && containerEl.contains(dragged)) {
                         e.target.innerHTML = "";
                         e.target.appendChild(dragged);
+                        stats.drops++;
+                        updateStatsDisplay();
                     }
                 }
             });
 
             // Check logic
             checkBtn.addEventListener("click", function () {
+                stats.checkAttempts++;
                 let allCorrect = true;
 
                 containerEl.querySelectorAll(".drop-zone").forEach(zone => {
@@ -83,6 +107,14 @@ var $exeDeviceExport = {
                     }
                 });
 
+                if (!allCorrect) {
+                    stats.failedAttempts++;
+                } else {
+                    stats.totalTime = Math.round((Date.now() - stats.startTime) / 1000);
+                }
+
+                updateStatsDisplay();
+
                 if (allCorrect) {
                     feedbackBox.textContent = "✅ All correct!";
                     finishCourse(true);
@@ -91,7 +123,7 @@ var $exeDeviceExport = {
                 }
             });
 
-            // Reset logic (new)
+            // Reset logic
             resetBtn.addEventListener("click", function () {
                 // Clear drop-zones
                 containerEl.querySelectorAll(".drop-zone").forEach(zone => {
@@ -111,7 +143,24 @@ var $exeDeviceExport = {
 
                 // Clear feedback
                 feedbackBox.textContent = "";
+
+                updateStatsDisplay();
             });
+
+            // Update stats box
+            function updateStatsDisplay() {
+                statsBox.innerHTML = `
+                    <strong>User Stats</strong><br>
+                    Clicks: ${stats.clicks}<br>
+                    Drags: ${stats.drags}<br>
+                    Drops: ${stats.drops}<br>
+                    Check Attempts: ${stats.checkAttempts}<br>
+                    Failed Attempts: ${stats.failedAttempts}<br>
+                    Time Taken: ${stats.totalTime > 0 ? stats.totalTime + 's' : '-'}
+                `;
+            }
+
+            updateStatsDisplay(); // Initialize on load
         });
 
         // SCORM init if available
@@ -125,7 +174,7 @@ $(function () {
     $exeDeviceExport.init();
 });
 
-//SCORM-safe completion function
+// SCORM-safe completion function
 function finishCourse(isFinalPackage = false) {
     try {
         if (typeof computeTime === "function") computeTime();
