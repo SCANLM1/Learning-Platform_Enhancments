@@ -50,3 +50,101 @@
 
 
 
+
+
+/* 
+.dragAndDropIdevice .button-group {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end; 
+    justify-content: flex-start; 
+    margin-bottom: 10px;
+} */
+
+
+
+/* Reset Button (smaller, subtle) */
+.dragAndDropIdevice .reset-answers-btn {
+    padding: 6px 14px;
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #d4d4d4;
+    border-radius: 6px;
+    font-size: 14px;
+	font-weight: 600;
+	font-family: inherit;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    box-shadow: none;
+}
+
+.dragAndDropIdevice .reset-answers-btn:hover {
+    background-color: #e0e0e0;
+}
+
+/* Submit Button (larger, primary) */
+.dragAndDropIdevice .check-answers-btn {
+    padding: 10px 24px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    box-shadow: none;
+}
+
+.dragAndDropIdevice .check-answers-btn:hover {
+    background-color: #218838;
+}
+
+/* Input box styling */
+/* .dragAndDropIdevice input.blank {
+    width: 100px;
+    margin: 2px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+} */
+
+/* Feedback area */
+.dragAndDropIdevice .feedback {
+    margin-top: 12px;
+    font-size: 15px;
+}
+
+/* Add margin above the button group */
+/* .dragAndDropIdevice .code-snippet {
+    margin-bottom: 20px; /* or more if you want extra space */
+/* } */ 
+
+/* Layout container for buttons */
+/* .dragAndDropIdevice .button-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+} */
+
+/* Left column: flush left */
+/* .dragAndDropIdevice .button-left {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+} */
+
+/* Center column: submit centered */
+/* .dragAndDropIdevice .button-center {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+} */
+
+/* Right column: empty, for balancing */
+/* .dragAndDropIdevice .button-right {
+    flex: 1;
+} */
+
