@@ -1,5 +1,20 @@
 var $eXeCompleteCode = {
     init: function () {
+
+        // sec policy for content
+        const meta = document.createElement("meta");
+        meta.httpEquiv = "Content-Security-Policy";
+        meta.content = `
+            default-src 'self'; 
+            script-src 'self' https://cdnjs.cloudflare.com; 
+            style-src 'self' https://cdnjs.cloudflare.com; 
+            img-src 'self' data:; 
+            object-src 'none'; 
+            base-uri 'self'; 
+            form-action 'self';
+        `;
+        document.head.appendChild(meta);
+        
         var elements = document.querySelectorAll('.complete-code-idevice, .trigger-complete-code');
         elements.forEach(function (container) {
             const codeEl = container.querySelector('.complete-code');
