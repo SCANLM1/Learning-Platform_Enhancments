@@ -14,6 +14,14 @@ var $eXeCompleteCode = {
             form-action 'self';
         `;
         document.head.appendChild(meta);
+
+        // Function to sanitize HTML
+        
+        const sanitizeHTML = (str) => {
+            const tempDiv = document.createElement("div");
+            tempDiv.textContent = str;
+            return tempDiv.innerHTML;
+        };
         
         var elements = document.querySelectorAll('.complete-code-idevice, .trigger-complete-code');
         elements.forEach(function (container) {
