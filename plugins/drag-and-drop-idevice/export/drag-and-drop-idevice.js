@@ -38,7 +38,7 @@ var $exeDeviceExport = {
                 <button class="check-answers-btn" style="margin-top: 10px;">Check Answers</button>
                 <button class="reset-answers-btn" style="margin-top: 10px; margin-left: 10px;">Reset</button>
                 <div class="feedback" style="margin-top: 8px;"></div>
-                <div class="stats-display" style="margin-top: 12px; font-family: monospace; background: #f9f9f9; padding: 8px; border: 1px solid #ccc;"></div>
+                <div class="stats-display" style="display: none;"></div>
             `;
 
             container.innerHTML = ui;
