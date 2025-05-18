@@ -1,6 +1,110 @@
-/* Anything included in the export folder will be exported if the iDevice is used. */
-.myExampleIdevice .iDevice_content{
-	background: url(example-idevice-logo.png) no-repeat right 0;
-	background-size: 70px auto;
-	padding-right: 90px;
+.complete-code-idevice .button-group {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end; /* Align bottom edges of differently sized buttons */
+    justify-content: flex-start; /* Align to left */
+    margin-bottom: 10px;
+}
+
+/* Reset Button (smaller, subtle) */
+.complete-code-idevice .reset-btn {
+    padding: 6px 14px;
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #d4d4d4;
+    border-radius: 6px;
+    font-size: 14px;
+	font-weight: 600;
+	font-family: inherit;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    box-shadow: none;
+}
+
+.complete-code-idevice .reset-btn:hover {
+    background-color: #e0e0e0;
+}
+
+/* Submit Button (larger, primary) */
+.complete-code-idevice .submit-btn {
+    padding: 10px 24px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    box-shadow: none;
+}
+
+.complete-code-idevice .submit-btn:hover {
+    background-color: #218838;
+}
+
+/* Input box styling */
+.complete-code-idevice input.blank {
+    width: 100px;
+    margin: 2px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Feedback area */
+.complete-code-idevice .feedback {
+    margin-top: 12px;
+    font-size: 15px;
+}
+
+/* Add margin above the button group */
+.complete-code-idevice .code-snippet {
+    margin-bottom: 20px; /* or more if you want extra space */
+}
+
+/* Layout container for buttons */
+.complete-code-idevice .button-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Left column: flush left */
+.complete-code-idevice .button-left {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+}
+
+/* Center column: submit centered */
+.complete-code-idevice .button-center {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+}
+
+/* Right column: empty, for balancing */
+.complete-code-idevice .button-right {
+    flex: 1;
+}
+
+.complete-code-idevice .hint-btn {
+    padding: 6px 14px;
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #d4d4d4;
+    border-radius: 6px;
+    font-size: 14px;
+	font-weight: 600;
+	font-family: inherit;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    box-shadow: none;
+}
+
+.complete-code-idevice .hint-btn:hover {
+    background-color: #e0e0e0;
 }

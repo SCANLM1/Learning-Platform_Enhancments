@@ -1,33 +1,11 @@
 var $eXeCompleteCode = {
     init: function () {
-
-        // sec policy for content
-        const meta = document.createElement("meta");
-        meta.httpEquiv = "Content-Security-Policy";
-        meta.content = `
-            default-src 'self'; 
-            script-src 'self' https://cdnjs.cloudflare.com; 
-            style-src 'self' https://cdnjs.cloudflare.com; 
-            img-src 'self' data:; 
-            object-src 'none'; 
-            base-uri 'self'; 
-            form-action 'self';
-        `;
-        document.head.appendChild(meta);
-
-        // Function to sanitize HTML
-        
-        const sanitizeHTML = (str) => {
-            const tempDiv = document.createElement("div");
-            tempDiv.textContent = str;
-            return tempDiv.innerHTML;
-        };
-        
         var elements = document.querySelectorAll('.complete-code-idevice, .trigger-complete-code');
         elements.forEach(function (container) {
             const codeEl = container.querySelector('.complete-code');
             const answersEl = container.querySelector('.complete-answers');
             const instructions = container.querySelector('.complete-instructions')?.innerHTML || '';
+            const hintHTML = container.querySelector('.complete-hint')?.innerHTML || '';
             const codeRaw = codeEl?.innerHTML || '';
             const answers = (answersEl?.textContent || '').split(',').map(a => a.trim());
 
@@ -39,14 +17,28 @@ var $eXeCompleteCode = {
             const html = `
                 <p>${instructions}</p>
                 <pre class="code-snippet">${renderedCode}</pre>
-                <button class="submit-btn">Finish</button>
-                <div class="feedback" style="margin-top: 10px;"></div>
+                <div class="feedback"></div>
+                <div class="button-layout">
+                    <div class="button-left">
+                        <button class="reset-btn">Reset</button>
+                        ${hintHTML ? `<button class="hint-btn">Hint</button>` : ""}
+                    </div>
+                    <div class="button-center">
+                        <button class="submit-btn">Submit</button>
+                    </div>
+                    <div class="button-right"></div>
+                </div>
+    
+                ${hintHTML ? `<div class="hint-box" style="display:none; margin-top:10px;">${hintHTML}</div>` : ""}
             `;
             container.innerHTML = html;
 
             const button = container.querySelector(".submit-btn");
+            const resetButton = container.querySelector(".reset-btn");
+            const hintButton = container.querySelector(".hint-btn");
             const blanks = container.querySelectorAll("input.blank");
             const feedbackBox = container.querySelector(".feedback");
+            const hintBox = container.querySelector(".hint-box");
 
             button.addEventListener("click", function () {
                 let allCorrect = true;
@@ -72,6 +64,23 @@ var $eXeCompleteCode = {
                     feedbackBox.textContent = "❌ Some answers are incorrect.";
                 }
             });
+
+            resetButton.addEventListener("click", function(){
+                blanks.forEach(input => {
+                    input.value = "";
+                    input.style.border = "";
+                    input.style.backgroundColor = "";
+                });
+                feedbackBox.textContent = "";
+                if (hintBox) hintBox.style.display = "none";
+            });
+
+            if (hintButton && hintBox) {
+                hintButton.addEventListener("click", function () {
+                    hintBox.style.display = hintBox.style.display === "none" ? "block" : "none";
+                });
+            }
+
         });
     }
 };
