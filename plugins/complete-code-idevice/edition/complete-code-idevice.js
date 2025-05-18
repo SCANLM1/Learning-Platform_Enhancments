@@ -12,9 +12,6 @@ var $exeDevice = {
                     
                     <p><label for="acceptedAnswers">Accepted Answers (comma-separated):</label>
                     <input type="text" id="acceptedAnswers" style="width: 100%;"></p>
-
-                    <p><label for="hintInput">Optional Hint:</label>
-                    <textarea id="hintInput" class="exe-html-editor" rows="2">
                 </div>
             </div>
         `;
@@ -32,17 +29,15 @@ var $exeDevice = {
         $("#instructionsInput").val(wrapper.find(".complete-instructions").html() || "");
         $("#codeInput").val(wrapper.find(".complete-code").html() || "");
         $("#acceptedAnswers").val(wrapper.find(".complete-answers").text() || "");
-        $("#hintInput").val(wrapper.find(".complete-hint").html() || "");
     },
 
     save: function () {
         const instructions = tinyMCE.get("instructionsInput")?.getContent() || "";
         const code = tinyMCE.get("codeInput")?.getContent() || "";
         const answers = $("#acceptedAnswers").val();
-        const hint = tinyMCE.get("hintInput")?.getContent() || "";
 
         if (!instructions || !code || !answers) {
-            eXe.app.alert("All fields are except hint required.");
+            eXe.app.alert("All fields are required.");
             return;
         }
 
@@ -51,7 +46,6 @@ var $exeDevice = {
                 <div class="complete-instructions">${instructions}</div>
                 <div class="complete-code">${code}</div>
                 <div class="complete-answers">${answers}</div>
-                ${hint ? `<div class="complete-hint" style="display:none;">${hint}</div>` : ""}
                 <span class="trigger-complete-code" style="display:none;"></span>
             </div>
         `;
