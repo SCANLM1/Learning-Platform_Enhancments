@@ -1,7 +1,7 @@
 /**
  * CodeBlock Export iDevice
  *
- * Renders the saved XML code block as a read-only CodeMirror editor.
+ * Renders the saved code block activity as an interactive CodeMirror editor.
  *
  * Released under Attribution-ShareAlike 4.0 International License.
  * Author: Your Name for http://exelearning.net/
@@ -9,29 +9,12 @@
  * License: http://creativecommons.org/licenses/by-sa/4.0/
  */
 
-// SECURITY CODE: Inject CSP meta tag for security
-(function() {
-    var meta = document.createElement("meta");
-    meta.httpEquiv = "Content-Security-Policy";
-    meta.content = ""
-        + "default-src 'self'; "
-        + "script-src 'self' https://cdnjs.cloudflare.com; "
-        + "style-src 'self' https://cdnjs.cloudflare.com; "
-        + "img-src 'self' data:; "
-        + "object-src 'none'; "
-        + "sandbox allow-scripts allow-same-origin; "
-        + "base-uri 'self'; "
-        + "form-action 'self';";
-    document.head.appendChild(meta);
-})();
-// END SECURITY CODE
-
 var $codeBlockIdevice = {
     // Entry point
     init: function() {
         var self = this;
         this.loadDependencies(function(){
-            self.renderCodeBlocks();
+            self.renderCodeBlockActivities();
         });
     },
 
@@ -64,23 +47,44 @@ var $codeBlockIdevice = {
         head.appendChild(script1);
     },
 
-    // Find each saved <pre> and replace with read-only CodeMirror
-    renderCodeBlocks: function() {
-        // Adjust selector if needed to match your export HTML
-        $(".exe-code-block pre").each(function() {
-            var preEl = this;
-            var code = preEl.textContent;
-            // Remove the <pre> so CodeMirror can replace it cleanly
-            var parent = preEl.parentNode;
-            CodeMirror(function(node) {
-                parent.replaceChild(node, preEl);
-            }, {
-                value: code,
-                mode: "javascript", // Change this if you want a different default
+    // Render the code block activity as an interactive exercise
+    renderCodeBlockActivities: function() {
+        $(".exe-code-block-activity").each(function() {
+            var $activity = $(this);
+            var title = $activity.find(".code-block-title").text() || "";
+            var codeToEdit = $activity.find(".code-block-to-edit pre").text() || "";
+            var correctFormatting = $activity.find(".code-block-answer pre").text() || "";
+
+            // Build the UI
+            var html = '<div class="code-block-export-title" style="font-weight:bold; margin-bottom:8px;">' + title + '</div>' +
+                '<div class="code-block-export-editor" style="margin-bottom:8px;"></div>' +
+                '<button type="button" class="code-block-check-btn" style="margin-bottom:8px;">Check Answer</button>' +
+                '<div class="code-block-feedback" style="margin-top:8px; font-weight:bold;"></div>';
+
+            $activity.html(html);
+
+            // Initialize CodeMirror editor (editable)
+            var editor = CodeMirror($activity.find(".code-block-export-editor")[0], {
+                value: codeToEdit,
+                mode: "javascript",
                 theme: "monokai",
-                readOnly: "nocursor",
                 lineNumbers: true,
                 lineWrapping: true
+            });
+
+            // Check answer logic
+            $activity.find(".code-block-check-btn").on("click", function() {
+                var userCode = editor.getValue().trim();
+                var correctCode = correctFormatting.trim();
+                var feedback = $activity.find(".code-block-feedback");
+                if (userCode === correctCode) {
+                    feedback.text("✅ Correct formatting!");
+                    feedback.css("color", "green");
+                    if (typeof finishCourse === "function") finishCourse();
+                } else {
+                    feedback.text("❌ Not quite right. Try again!");
+                    feedback.css("color", "red");
+                }
             });
         });
     }
