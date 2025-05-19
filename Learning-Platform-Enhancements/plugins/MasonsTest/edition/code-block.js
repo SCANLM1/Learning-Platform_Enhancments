@@ -3,50 +3,51 @@
  */
 var $exeDevice = {
     i18n: { name: _("CodeBlock") },
-    // mason
-    // reference to our code mirror instance
     codeMirrorEditor: null,
     codeMirrorAnswerEditor: null,
 
     init: function() {
         var self = this;
-
-        // Build the CodeMirror form (no check button or feedback)
-        var html = '\
-        <div id="codeBlockForm">\
-            <p><label for="codeBlockTitle"><strong>' + _("Title of module:") + '</strong></label><br>\
-            <input type="text" id="codeBlockTitle" style="width:100%;" /></p>\
-            <p><label for="codeBlockEditor"><strong>' + _("Incorrect code for question:") + '</strong></label><br>\
-            <textarea id="codeBlockEditor"></textarea></p>\
-            <p><label for="codeBlockAnswer"><strong>' + _("Correct formatting option:") + '</strong></label><br>\
-            <textarea id="codeBlockAnswer" style="display:none;"></textarea></p>\
-        </div>';
-        // Insert it before the hidden textarea
-        var field = $("#activeIdevice textarea.jsContentEditor");
-        field.before(html);
-        field.hide(); // Hide the default textarea
-        // Restore saved code (if any)
-        self.getPreviousValues(field);
-        // Init CodeMirror for incorrect code
-        var area = document.getElementById("codeBlockEditor");
-        if (area) {
-            self.codeMirrorEditor = CodeMirror.fromTextArea(area, {
-                lineNumbers: true,
-                mode: "javascript",
-                theme: "monokai",
-                lineWrapping: true
-            });
-        }
-        // Init CodeMirror for correct formatting (hidden)
-        var answerArea = document.getElementById("codeBlockAnswer");
-        if (answerArea) {
-            self.codeMirrorAnswerEditor = CodeMirror.fromTextArea(answerArea, {
-                lineNumbers: true,
-                mode: "javascript",
-                theme: "monokai",
-                lineWrapping: true
-            });
-        }
+        this.loadDependencies(function() {
+            // Remove any previous form to avoid duplicates
+            $("#codeBlockForm").remove();
+            // Build the CodeMirror form (XML only)
+            var html = '\
+            <div id="codeBlockForm">\
+                <p><label for="codeBlockTitle"><strong>' + _("Title of module:") + '</strong></label><br>\
+                <input type="text" id="codeBlockTitle" style="width:100%;" /></p>\
+                <p><label for="codeBlockEditor"><strong>' + _("Incorrect code for question:") + '</strong></label><br>\
+                <textarea id="codeBlockEditor"></textarea></p>\
+                <p><label for="codeBlockAnswer"><strong>' + _("Correct formatting option:") + '</strong></label><br>\
+                <textarea id="codeBlockAnswer"></textarea></p>\
+            </div>';
+            // Insert it before the hidden textarea
+            var field = $("#activeIdevice textarea.jsContentEditor");
+            field.before(html);
+            field.hide(); // Hide the default textarea
+            // Restore saved code (if any)
+            self.getPreviousValues(field);
+            // Init CodeMirror for incorrect code (XML mode)
+            var area = document.getElementById("codeBlockEditor");
+            if (area) {
+                self.codeMirrorEditor = CodeMirror.fromTextArea(area, {
+                    lineNumbers: true,
+                    mode: "xml",
+                    theme: "monokai",
+                    lineWrapping: true
+                });
+            }
+            // Init CodeMirror for correct formatting (XML mode)
+            var answerArea = document.getElementById("codeBlockAnswer");
+            if (answerArea) {
+                self.codeMirrorAnswerEditor = CodeMirror.fromTextArea(answerArea, {
+                    lineNumbers: true,
+                    mode: "xml",
+                    theme: "monokai",
+                    lineWrapping: true
+                });
+            }
+        });
     },
 
     loadDependencies: function(cb) {
@@ -66,9 +67,9 @@ var $exeDevice = {
             var s1 = document.createElement("script");
             s1.src = "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.1/codemirror.min.js";
             s1.onload = function() {
-                // JavaScript mode
+                // XML mode
                 var s2 = document.createElement("script");
-                s2.src = "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.1/mode/javascript/javascript.min.js";
+                s2.src = "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.1/mode/xml/xml.min.js";
                 s2.onload = cb;
                 head.appendChild(s2);
             };

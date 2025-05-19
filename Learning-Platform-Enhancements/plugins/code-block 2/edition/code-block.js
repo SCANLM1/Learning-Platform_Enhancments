@@ -10,24 +10,6 @@ var $exeDevice = {
 	init: function() {
 		var self = this;
 
-		// inject content security policy 
-		// has to be done because rendering html like normal does not work
-		// simple <meta> tag has to be rendered within a function
-		(function() {
-			var meta = document.createElement("meta");
-			meta.httpEquiv = "Content-Security-Policy";
-			meta.content = ""
-				+ "default-src 'self'; "
-				+ "script-src 'self' https://cdnjs.cloudflare.com; "
-				+ "style-src 'self' https://cdnjs.cloudflare.com; "
-				+ "img-src 'self' data:; "
-				+ "object-src 'none'; "
-				+ "sandbox allow-scripts allow-same-origin; "
-				+ "base-uri 'self'; "
-				+ "form-action 'self';";
-			document.head.appendChild(meta);
-		})();
-
 		this.loadDependencies(function() {
 			// Build the CodeMirror form
 			var html = '\
@@ -38,6 +20,7 @@ var $exeDevice = {
 			// Insert it before the hidden textarea
 			var field = $("#activeIdevice textarea.jsContentEditor");
 			field.before(html);
+			field.hide(); // Hide the default textarea
 			// Restore saved code (if any)
 			self.getPreviousValues(field);
 			// Init CodeMirror
@@ -88,10 +71,10 @@ var $exeDevice = {
 		if (this.codeMirrorEditor) {
 			// Get the code from the editor
 			var c = this.codeMirrorEditor.getValue();
-			
-			// Sanitize the code using DOMPurify
-			var sanitizedCode = DOMPurify.sanitize(c);
-
+			// Sanitize the code using DOMPurify if available
+			var sanitizedCode = (typeof DOMPurify !== "undefined")
+				? DOMPurify.sanitize(c)
+				: c;
 			// Wrap the sanitized code in the expected structure
 			if (sanitizedCode) res = '<div class="exe-code-block"><pre>' + sanitizedCode + '</pre></div>';
 		}
