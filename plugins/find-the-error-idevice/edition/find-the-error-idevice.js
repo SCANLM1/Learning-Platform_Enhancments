@@ -1,194 +1,108 @@
 /**
- * Example iDevice (edition code)
- *
- * Released under Attribution-ShareAlike 4.0 International License.
- * Author: Ignacio Gros (http://gros.es/) for http://exelearning.net/
- *
+ * Find the Error iDevice (edition code)
+ * Built on base plugin template from eXeLearning
+ * Author: Shubham Paudel + Ignacio Gros base
  * License: http://creativecommons.org/licenses/by-sa/4.0/
  */
 var $exeDevice = {
-	
-	// For score (SCORM) options, see the games' loadSCOFunctions method
-	// i18n intructions: Always use _ as in "Information and instructions."
-	
-	// i18n
-	i18n : {
-		
-		name : _("Example"), // Title in config.xml
-		
-		// Optional translations
-		// Spanish
-		es : {
-			"Information and instructions." : "Información e instrucciones.",
-		}
-		
-	},
 
-	// Custom i18n (see Advanced mode - Language settings tab)
-	ci18n: {
-		"btn1": _("Click here to start"),
-		"btn2": _("Maximize")
-	},
-	
-	init : function(){
-		
-		// Create the form
-		var html = '\
-			<div id="myExampleForm">\
-				<div class="exe-idevice-info">'+_("Instructions")+'</div>\
-				<div class="exe-form-tab" title="Tab 1 title">\
-					<p>\
-						<label for="myExampleFieldA">Paragraph content:</label>\
-						<input type="text" id="myExampleFieldA">\
-					</p>\
-					<p>\
-						<label for="myExampleFieldB">Paragraph color:</label>\
-						<input type="text" id="myExampleFieldB" class="exe-color-picker">\
-					</p>\
-					<div>\
-						<label for="myExampleFieldC">TinyMCE example:</label>\
-						<textarea id="myExampleFieldC" class="exe-html-editor"></textarea>\
-					</div>\
-					<p>\
-						<label for="myExampleFieldD">File picker example:</label>\
-						<input type="text" id="myExampleFieldD" class="exe-file-picker">\
-					</p>\
-					<p>\
-						<label for="myExampleFieldE">Image picker example:</label>\
-						<input type="text" id="myExampleFieldE" class="exe-image-picker">\
-					</p>\
-				</div>\
-				<div class="exe-form-tab" title="Tab 2 title">\
-					<fieldset class="exe-fieldset exe-fieldset-closed">\
-						<legend><a href="#">Fieldset example</a></legend>\
-						<div>\
-							<p>...</p>\
-						</div>\
-					</fieldset>\
-				</div>\
-				' + $exeAuthoring.iDevice.gamification.common.getLanguageTab(this.ci18n) + '\
-			</div>\
-		';
-		
-		var field = $("#activeIdevice textarea.jsContentEditor");
-		
-		field.before(html); // Hidden TEXTAREA
-		
-		$exeAuthoring.iDevice.tabs.init("myExampleForm"); // Enable tabs
-		
-		this.getPreviousValues(field);
-		
-	},
-	save : function(){
-		
-		// This method will return the content to save (HTML, JSON...)
-		// That code will be placed in the hidden TEXTAREA
-		var res = "";
-		
-		// Paragraph content (with validation example)
-		var p = $("#myExampleFieldA").val();
-		if (p=="") {
-			eXe.app.alert("Please type the paragraph content.");
-			return false;
-		}
+    // Called when the iDevice editor loads in eXeLearning
+    init: function () {
+        // HTML structure for the editing interface
+        var html = `
+            <div id="findErrorEditor">
+                <label for="codeInput">Code Block:</label>
+                <textarea id="codeInput" rows="10" style="width:100%"></textarea>
 
-		// Paragraph color
-		var pStyle = '';
-		var pC = $("#myExampleFieldB").val();
-		if (pC!="") {
-			pStyle = ' style="color:#'+pC+'"';
-		}		
-		
-		// Paragraph
-		res += "<p"+pStyle+">"+p+"</p>";
-		
-		// Rich text (TinyMCE)
-		var t = tinymce.editors[0].getContent();
-		if (t!="") {
-			res += '<div class="exe-text">';
-				res += t;
-			res += '</div>';	
-		}
-		
-		// File picker
-		var file = $("#myExampleFieldD").val();
-		if (file!="") {
-			var fileName = file;
-				fileName = fileName.split("_");
-				fileName = fileName[fileName.length-1];
-				fileName = fileName.split("/");
-				fileName = fileName[fileName.length-1];
-				if (fileName=="") fileName = "Fichero adjunto";
-			res += '<p class="exe-attachment-file"><a href="'+file+'">'+fileName+'</a></p>';
-		}
-		
-		// Image picker
-		var img = $("#myExampleFieldE").val();
-		if (img!="") {
-			res += '<p class="exe-attachment-img"><img src="'+img+'" alt=""></p>';
-		}
-		
-		// Buttons with custom text (Advanced mode - Language settings tab
-		var btn1 = $("#ci18n_btn1").val();
-		if (btn1=="") btn1 = this.ci18n.btn1;
-		var btn2 = $("#ci18n_btn2").val();
-		if (btn2=="") btn2 = this.ci18n.btn2;
-		
-		res += '<p class="exe-custom-btns">\
-			<button type="button">'+btn1+'</button>\
-			<button type="button">'+btn2+'</button>\
-		</p>';
-		
-		// HTML to save
-		return res;
-	},
-	getPreviousValues : function(field){
-		
-		var content = field.val();
-		if (content != '') {
-			
-			// Find the previous values in the HTML you saved
-			var wrapper = $("<div></div>");
-				wrapper.html(content);
-			
-			// Paragraph
-			var p = $("p",wrapper).eq(0);
-			
-			$("#myExampleFieldA").val(p.text()); // Contenido del párrafo
-			
-			// Paragraph color
-			var pC = p.attr("style");
-			if (typeof(pC)=='string'&&pC.indexOf("color:#")==0) pC = pC.replace("color:#","");
-			$("#myExampleFieldB").val(pC);
-			
-			// TinyMCE
-			var t = $("div.exe-text",wrapper).eq(0);
-			if (t.length==1) {
-				$("#myExampleFieldC").val(t.html());
-			}
-			
-			// Attached file (file picker)
-			var a = $("p.exe-attachment-file a",wrapper).eq(0);
-			if (a.length==1) {
-				$("#myExampleFieldD").val(a.attr("href"));
-			}
-			
-			// Image (image picker)
-			var a = $("p.exe-attachment-img img",wrapper).eq(0);
-			if (a.length==1) {
-				$("#myExampleFieldE").val(a.attr("src"));
-			}
-			
-			// Buttons
-			var btns = $("p.exe-custom-btns button",wrapper);
-			if (btns.length==2) {
-				var btn1 = btns.eq(0).text();
-				var btn2 = btns.eq(1).text();
-				$("#ci18n_btn1").val(btn1);
-				$("#ci18n_btn2").val(btn2);
-			}
-			
-		}
-		
-	}
-}
+                <label for="correctLine">Correct Line Number (starting from 0):</label>
+                <input type="number" id="correctLine" min="0" style="width:100%" />
+
+                <label for="feedbackData">Feedback Map (JSON):</label>
+                <textarea id="feedbackData" rows="5" style="width:100%"></textarea>
+
+                <div id="codeLinePreview" class="code-block" style="margin-top:10px;"></div>
+            </div>
+        `;
+
+        // Insert the HTML before the hidden text area that eXe uses to save iDevice data
+        var field = $("#activeIdevice textarea.jsContentEditor");
+        field.before(html);
+
+        // Load previously saved data, if any
+        this.getPreviousValues(field);
+
+        // Get references to inputs and preview container
+        const codeInput = $("#codeInput");
+        const correctInput = $("#correctLine");
+        const feedbackInput = $("#feedbackData");
+        const preview = $("#codeLinePreview");
+
+        // When any of the inputs change, update the preview
+        codeInput.on("input", () => renderPreview());
+        feedbackInput.on("input", () => renderPreview());
+        correctInput.on("input", () => renderPreview());
+
+        // Preview rendering function
+        function renderPreview() {
+            preview.empty(); // Clear old preview
+            const lines = codeInput.val().split('\n'); // Split code into lines
+            const correct = parseInt(correctInput.val()); // Convert to number
+            let feedbackMap = {};
+
+            // Try parsing the feedback JSON
+            try {
+                feedbackMap = JSON.parse(feedbackInput.val() || '{}');
+            } catch (e) {
+                feedbackMap = {};
+            }
+
+            // For each line, add it to preview with color if needed
+            lines.forEach((line, i) => {
+                const span = $('<div></div>').text(line).addClass('code-line');
+                if (i === correct) span.css('background', '#d4edda'); // green if correct line
+                else if (feedbackMap[i]) span.css('background', '#f8d7da'); // red if marked as incorrect
+                preview.append(span);
+            });
+        }
+
+        // Render the initial preview
+        renderPreview();
+    },
+
+    // Called when the author clicks Save in eXe
+    save: function () {
+        const code = $("#codeInput").val(); // get code text
+        const correct = $("#correctLine").val(); // get correct line number
+        const feedback = $("#feedbackData").val(); // get feedback map
+
+        // Validate: must have code
+        if (!code.trim()) {
+            eXe.app.alert("Please enter code.");
+            return false;
+        }
+
+        // Return HTML content that will be saved into the SCORM package
+        return `
+            <pre class="code-block">${$('<div>').text(code).html()}</pre>
+            <input type="hidden" class="correctLine" value="${correct}" />
+            <input type="hidden" class="feedbackData" value='${feedback}' />
+        `;
+    },
+
+    // Called to restore saved data into the editing interface
+    getPreviousValues: function (field) {
+        const content = field.val();
+        if (!content) return;
+
+        // Wrap the HTML to allow DOM querying
+        const wrapper = $('<div></div>').html(content);
+        const codeText = wrapper.find('pre.code-block').text(); // get saved code
+        const correctLine = wrapper.find('input.correctLine').val(); // get correct line
+        const feedbackMap = wrapper.find('input.feedbackData').val(); // get feedback JSON
+
+        // Set inputs with saved values
+        $("#codeInput").val(codeText);
+        $("#correctLine").val(correctLine);
+        $("#feedbackData").val(feedbackMap);
+    }
+};

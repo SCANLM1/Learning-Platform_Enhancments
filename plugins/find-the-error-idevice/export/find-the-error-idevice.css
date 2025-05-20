@@ -1,6 +1,18 @@
 /* Anything included in the export folder will be exported if the iDevice is used. */
-.myExampleIdevice .iDevice_content{
-	background: url(example-idevice-logo.png) no-repeat right 0;
-	background-size: 70px auto;
-	padding-right: 90px;
+.code-line {
+  display: block;
+  padding: 2px 6px;
+  font-family: monospace;
+  white-space: pre;
+  cursor: pointer;
+}
+
+.code-line.correct {
+  background-color: #d4edda;
+  border-left: 4px solid green;
+}
+
+.code-line.incorrect {
+  background-color: #f8d7da;
+  border-left: 4px solid red;
 }
