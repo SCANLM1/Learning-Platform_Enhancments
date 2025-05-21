@@ -1,20 +1,3 @@
-// SECURITY CODE: Inject CSP meta tag for security
-(function() {
-    var meta = document.createElement("meta");
-    meta.httpEquiv = "Content-Security-Policy";
-    meta.content = ""
-        + "default-src 'self'; "
-        + "script-src 'self' https://cdnjs.cloudflare.com; "
-        + "style-src 'self' https://cdnjs.cloudflare.com; "
-        + "img-src 'self' data:; "
-        + "object-src 'none'; "
-        + "sandbox allow-scripts allow-same-origin; "
-        + "base-uri 'self'; "
-        + "form-action 'self';";
-    document.head.appendChild(meta);
-})();
-// END SECURITY CODE
-
 var $exeDevice = {
     originalDraggables: [],
 
@@ -89,13 +72,7 @@ var $exeDevice = {
 
     save: function () {
         const inputText = $("#questionInput").val();
-        // SECURITY CODE: Sanitize input using DOMPurify before processing
-        var sanitizedInput = (typeof DOMPurify !== "undefined")
-            ? DOMPurify.sanitize(inputText)
-            : inputText;
-        // END SECURITY CODE
-
-        const matches = [...sanitizedInput.matchAll(/\[\[(.*?)\]\]/g)];
+        const matches = [...inputText.matchAll(/\[\[(.*?)\]\]/g)];
         let lastIndex = 0;
         const uid = 'dd' + Date.now();
 
@@ -103,7 +80,7 @@ var $exeDevice = {
         let draggableItemsHtml = `<div id="${uid}_draggableContainer" class="draggable-container" style="display: flex; gap: 10px; margin-top: 10px;">`;
 
         matches.forEach((match, index) => {
-            const textBefore = sanitizedInput.substring(lastIndex, match.index);
+            const textBefore = inputText.substring(lastIndex, match.index);
             const answer = match[1];
             const dragId = `${uid}_draggableAnswer${index}`;
 
@@ -113,7 +90,7 @@ var $exeDevice = {
             lastIndex = match.index + match[0].length;
         });
 
-        dragDropHtml += sanitizedInput.substring(lastIndex) + '</p>' + draggableItemsHtml + '</div></div>';
+        dragDropHtml += inputText.substring(lastIndex) + '</p>' + draggableItemsHtml + '</div></div>';
 
         $("#activeIdevice textarea.jsContentEditor").val(dragDropHtml);
         return dragDropHtml;

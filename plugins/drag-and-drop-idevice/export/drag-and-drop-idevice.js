@@ -1,20 +1,3 @@
-// SECURITY CODE: Inject CSP meta tag for security
-(function() {
-    var meta = document.createElement("meta");
-    meta.httpEquiv = "Content-Security-Policy";
-    meta.content = ""
-        + "default-src 'self'; "
-        + "script-src 'self' https://cdnjs.cloudflare.com; "
-        + "style-src 'self' https://cdnjs.cloudflare.com; "
-        + "img-src 'self' data:; "
-        + "object-src 'none'; "
-        + "sandbox allow-scripts allow-same-origin; "
-        + "base-uri 'self'; "
-        + "form-action 'self';";
-    document.head.appendChild(meta);
-})();
-// END SECURITY CODE
-
 var $exeDeviceExport = {
     init: function () {
         document.querySelectorAll(".dragdrop-idevice").forEach(function (container) {
@@ -25,31 +8,13 @@ var $exeDeviceExport = {
             const textWrapper = container.querySelector("p");
             const draggableContainer = container.querySelector("#draggableContainer");
 
-            // SECURITY CODE: Escape dynamic HTML to prevent XSS
-            function escapeHTML(str) {
-                return String(str)
-                    .replace(/&/g, "&amp;")
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;")
-                    .replace(/"/g, "&quot;")
-                    .replace(/'/g, "&#039;");
-            }
-            // END SECURITY CODE
-
             // Preserve original text
-            // SECURITY CODE: Escape the originalHTML
-            const originalHTML = textWrapper ? escapeHTML(textWrapper.innerHTML) : "";
-            // END SECURITY CODE
-
-            // SECURITY CODE: Escape draggable content
+            const originalHTML = textWrapper?.innerHTML || "";
             const draggables = Array.from(draggableEls).map(el => {
                 el.setAttribute("draggable", "true");
                 el.classList.add("draggable");
-                // Escape the innerHTML of each draggable
-                const safeContent = escapeHTML(el.innerHTML);
-                return `<div class="draggable" draggable="true" id="${el.id}">${safeContent}</div>`;
+                return el.outerHTML;
             });
-            // END SECURITY CODE
 
             // Store original draggable HTML for reset
             const originalDraggablesHTML = [...draggables];
