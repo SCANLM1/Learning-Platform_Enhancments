@@ -1,150 +1,130 @@
-.dragdrop-idevice .iDevice_title,
-.dragdrop-idevice label,
-.dragdrop-idevice input[type="text"],
-.dragdrop-idevice #nextPageForm {
-    display: none;
-}
-
-/* Style for the next page button */
 .dragdrop-idevice {
-    padding: 10px 20px;
-    font-size: 20px;
-    cursor: pointer;
-    display: inline-block;
-    text-align: right;
+    font-family: inherit;
+    padding: 10px;
 }
 
-/* Align the button to the right */
-.dragdrop-idevice .iDevice_content {
-    text-align: right; /* Right-aligns the content, which includes the Next button */
-}
-.draggable {
-    padding: 5px 10px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    cursor: pointer;
-    user-select: none; /* Prevents the text within from being selectable, which improves UX during dragging */
+.dragdrop-idevice .instructions {
+    margin-bottom: 12px;
 }
 
-.drop-zone {
-    display: inline-block;
-    min-width: 100px;
-    height: 20px;
-    vertical-align: middle;
-    border: 1px dashed #ccc;
-    margin: 0 5px;
-    padding: 3px 10px;
+.dragdrop-idevice .code-snippet,
+.dragdrop-idevice .dragdrop-question {
+    font-family: monospace;
+    white-space: pre-wrap;
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 12px;
 }
 
-
-.correct {
-    background-color: green;
-    color: white;
-}
-
-.incorrect {
-    background-color: red;
-    color: white;
-}
-
-
-
-
-
-/* 
-.dragdrop-idevice .button-group {
+.dragdrop-idevice .draggable-container {
     display: flex;
-    gap: 12px;
-    align-items: flex-end; 
-    justify-content: flex-start; 
-    margin-bottom: 10px;
-} */
-
-
-
-/* Reset Button (smaller, subtle) */
-.dragdrop-idevice .reset-answers-btn {
-    padding: 6px 14px;
-    background-color: #f0f0f0;
-    color: #333;
-    border: 1px solid #d4d4d4;
-    border-radius: 6px;
-    font-size: 14px;
-	font-weight: 600;
-	font-family: inherit;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    box-shadow: none;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
 }
 
-.dragdrop-idevice .reset-answers-btn:hover {
-    background-color: #e0e0e0;
-}
-
-/* Submit Button (larger, primary) */
-.dragdrop-idevice .check-answers-btn {
-    padding: 10px 24px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    font-size: 15px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    box-shadow: none;
-}
-
-.dragdrop-idevice .check-answers-btn:hover {
-    background-color: #218838;
-}
-
-/* Input box styling */
-/* .dragdrop-idevice input.blank {
-    width: 100px;
-    margin: 2px;
-    padding: 6px;
+.dragdrop-idevice .draggable {
+    display: inline-block;
+    min-width: 80px;
+    padding: 6px 12px;
+    background-color: #eee;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-} */
-
-/* Feedback area */
-.dragdrop-idevice .feedback {
-    margin-top: 12px;
-    font-size: 15px;
+    border-radius: 6px;
+    cursor: grab;
+    user-select: none;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
 }
 
-/* Add margin above the button group */
-/* .dragdrop-idevice .code-snippet {
-    margin-bottom: 20px; /* or more if you want extra space */
-/* } */ 
+.dragdrop-idevice .drop-zone {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 80px;
+    min-height: 32px;
+    padding: 4px 6px;
+    border: 1px dashed #aaa;
+    margin: 0 5px;
+    border-radius: 4px;
+    background-color: #fff;
+    vertical-align: middle;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
 
-/* Layout container for buttons */
-/* .dragdrop-idevice .button-layout {
+.dragdrop-idevice .feedback {
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.dragdrop-idevice .hint-box {
+    margin-top: 10px;
+    font-style: italic;
+    background: #f0f0f0;
+    padding: 8px 12px;
+    border-left: 4px solid #999;
+    border-radius: 6px;
+}
+
+/* Button Layout */
+.button-layout {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
-} */
-
-/* Left column: flush left */
-/* .dragdrop-idevice .button-left {
-    display: flex;
     gap: 12px;
-    flex: 1;
-} */
+    margin-top: 10px;
+}
 
-/* Center column: submit centered */
-/* .dragdrop-idevice .button-center {
+.button-left,
+.button-center,
+.button-right {
     display: flex;
+    gap: 10px;
+}
+
+.button-left,
+.button-right {
+    flex: 1;
+}
+
+.button-center {
     justify-content: center;
     flex: 1;
-} */
+}
 
-/* Right column: empty, for balancing */
-/* .dragdrop-idevice .button-right {
-    flex: 1;
-} */
+/* Buttons */
+.dragdrop-idevice .check-btn,
+.dragdrop-idevice .reset-btn,
+.dragdrop-idevice .hint-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
 
+.dragdrop-idevice .check-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+}
+
+.dragdrop-idevice .check-btn:hover {
+    background-color: #218838;
+}
+
+.dragdrop-idevice .reset-btn,
+.dragdrop-idevice .hint-btn {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.dragdrop-idevice .reset-btn:hover,
+.dragdrop-idevice .hint-btn:hover {
+    background-color: #e0e0e0;
+}

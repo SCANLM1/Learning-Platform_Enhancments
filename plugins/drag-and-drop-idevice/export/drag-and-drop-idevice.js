@@ -1,103 +1,94 @@
 var $exeDeviceExport = {
     init: function () {
         document.querySelectorAll(".dragdrop-idevice").forEach(function (container) {
-            const dropZoneEls = container.querySelectorAll(".drop-zone");
-            const draggableEls = container.querySelectorAll(".draggable");
+            const instructionHTML = container.querySelector(".dragdrop-instructions")?.innerHTML || "";
+            const hintHTML = container.querySelector(".dragdrop-hint")?.innerHTML || "";
+            const sentenceRaw = container.querySelector(".dragdrop-question")?.innerHTML || "";
 
-            // Reconstruct the interface from saved HTML
-            const textWrapper = container.querySelector("p");
-            const draggableContainer = container.querySelector("#draggableContainer");
+            const matches = [...sentenceRaw.matchAll(/\[\[(.*?)\]\]/g)];
+            let lastIndex = 0;
+            const uid = 'dd' + Date.now();
+            let dropHTML = `<pre class="code-snippet">`;
+            let draggables = [];
 
-            // Preserve original text
-            const originalHTML = textWrapper?.innerHTML || "";
-            const draggables = Array.from(draggableEls).map(el => {
-                el.setAttribute("draggable", "true");
-                el.classList.add("draggable");
-                return el.outerHTML;
+            matches.forEach((match, i) => {
+                const textBefore = sentenceRaw.substring(lastIndex, match.index);
+                const answer = match[1];
+                const id = `${uid}_drag_${i}`;
+
+                // ✅ Add zero-width space to preserve inline layout even when empty
+                dropHTML += `${textBefore}<span class="drop-zone" data-correct-answer="${id}">&#8203;</span>`;
+                draggables.push(`<div class="draggable" id="${id}" draggable="true">${answer}</div>`);
+                lastIndex = match.index + match[0].length;
             });
 
-            // Store original draggable HTML for reset
-            const originalDraggablesHTML = [...draggables];
+            dropHTML += sentenceRaw.substring(lastIndex) + '</pre>';
 
-            // Track stats
-            const stats = {
-                clicks: 0,
-                drags: 0,
-                drops: 0,
-                checkAttempts: 0,
-                failedAttempts: 0,
-                startTime: Date.now(),
-                totalTime: 0
-            };
+            for (let i = draggables.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [draggables[i], draggables[j]] = [draggables[j], draggables[i]];
+            }
 
-            const ui = `
-                <p>${originalHTML}</p>
-                <div id="draggableContainer" style="display: flex; gap: 10px; margin-top: 10px;">
-                    ${draggables.join("\n")}
+            const dragContainer = `<div class="draggable-container">${draggables.join("")}</div>`;
+            const layout = `
+                <div class="instructions">${instructionHTML}</div>
+                ${dropHTML}
+                ${dragContainer}
+                <div class="button-layout">
+                    <div class="button-left">
+                        ${hintHTML ? `<button class="hint-btn">Hint</button>` : ""}
+                        <button class="reset-btn">Reset</button>
+                    </div>
+                    <div class="button-center">
+                        <button class="check-btn">Check Answers</button>
+                    </div>
+                    <div class="button-right"></div>
                 </div>
-                <button class="check-answers-btn" style="margin-top: 10px;">Check Answers</button>
-                <button class="reset-answers-btn" style="margin-top: 10px; margin-left: 10px;">Reset</button>
-                <div class="feedback" style="margin-top: 8px;"></div>
-                <div class="stats-display" style="display: none;"></div>
+                <div class="feedback"></div>
+                ${hintHTML ? `<div class="hint-box" style="display:none;">${hintHTML}</div>` : ""}
             `;
 
-            container.innerHTML = ui;
+            container.innerHTML = layout;
 
-            const containerEl = container;
-            const checkBtn = container.querySelector(".check-answers-btn");
-            const resetBtn = container.querySelector(".reset-answers-btn");
-            const feedbackBox = container.querySelector(".feedback");
-            const statsBox = container.querySelector(".stats-display");
-            const dragContainer = container.querySelector("#draggableContainer");
+            const drops = container.querySelectorAll(".drop-zone");
+            const feedback = container.querySelector(".feedback");
+            const checkBtn = container.querySelector(".check-btn");
+            const resetBtn = container.querySelector(".reset-btn");
+            const hintBtn = container.querySelector(".hint-btn");
+            const hintBox = container.querySelector(".hint-box");
+            const dragBox = container.querySelector(".draggable-container");
 
-            // Click tracker
-            containerEl.addEventListener("click", function () {
-                stats.clicks++;
-                updateStatsDisplay();
-            });
-
-            // Drag start
-            containerEl.addEventListener("dragstart", function (e) {
+            // Drag and Drop Behavior
+            container.addEventListener("dragstart", e => {
                 if (e.target.classList.contains("draggable")) {
-                    stats.drags++;
                     e.dataTransfer.setData("text/plain", e.target.id);
-                    updateStatsDisplay();
                 }
             });
 
-            // Drag over
-            containerEl.addEventListener("dragover", function (e) {
+            container.addEventListener("dragover", e => {
                 if (e.target.classList.contains("drop-zone")) {
                     e.preventDefault();
                 }
             });
 
-            // Drop
-            containerEl.addEventListener("drop", function (e) {
-                if (e.target.classList.contains("drop-zone")) {
-                    e.preventDefault();
-                    const id = e.dataTransfer.getData("text/plain");
-                    const dragged = document.getElementById(id);
+            container.addEventListener("drop", e => {
+                const id = e.dataTransfer.getData("text/plain");
+                const el = document.getElementById(id);
+                const zone = e.target.closest(".drop-zone");
 
-                    if (dragged && containerEl.contains(dragged)) {
-                        e.target.innerHTML = "";
-                        e.target.appendChild(dragged);
-                        stats.drops++;
-                        updateStatsDisplay();
-                    }
+                if (el && zone) {
+                    zone.innerHTML = "";
+                    zone.appendChild(el);
                 }
             });
 
-            // Check logic
-            checkBtn.addEventListener("click", function () {
-                stats.checkAttempts++;
+            // Check Answers
+            checkBtn.addEventListener("click", () => {
                 let allCorrect = true;
-
-                containerEl.querySelectorAll(".drop-zone").forEach(zone => {
-                    const expectedId = zone.getAttribute("data-correct-answer");
+                drops.forEach(zone => {
+                    const correct = zone.dataset.correctAnswer;
                     const dragged = zone.querySelector(".draggable");
-
-                    if (dragged && dragged.id === expectedId) {
+                    if (dragged && dragged.id === correct) {
                         zone.style.border = "2px solid green";
                         zone.style.backgroundColor = "#eaffea";
                     } else {
@@ -106,64 +97,39 @@ var $exeDeviceExport = {
                         allCorrect = false;
                     }
                 });
-
-                if (!allCorrect) {
-                    stats.failedAttempts++;
-                } else {
-                    stats.totalTime = Math.round((Date.now() - stats.startTime) / 1000);
-                }
-
-                updateStatsDisplay();
-
-                if (allCorrect) {
-                    feedbackBox.textContent = "✅ All correct!";
-                    finishCourse(true);
-                } else {
-                    feedbackBox.textContent = "❌ Some answers are incorrect.";
-                }
+                feedback.textContent = allCorrect ? "✅ All correct!" : "❌ Some answers are incorrect.";
+                if (allCorrect) finishCourse();
             });
 
-            // Reset logic
-            resetBtn.addEventListener("click", function () {
-                // Clear drop-zones
-                containerEl.querySelectorAll(".drop-zone").forEach(zone => {
-                    zone.innerHTML = "";
+            // Reset
+            resetBtn.addEventListener("click", () => {
+                drops.forEach(zone => {
+                    const item = zone.querySelector(".draggable");
+                    if (item) dragBox.appendChild(item);
+                    zone.innerHTML = "&#8203;";
                     zone.style.border = "";
                     zone.style.backgroundColor = "";
                 });
 
-                // Restore draggables
-                dragContainer.innerHTML = originalDraggablesHTML.join("\n");
+                const items = [...dragBox.querySelectorAll(".draggable")];
+                for (let i = items.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [items[i], items[j]] = [items[j], items[i]];
+                }
+                dragBox.innerHTML = "";
+                items.forEach(item => dragBox.appendChild(item));
 
-                // Reapply drag attributes
-                dragContainer.querySelectorAll(".draggable").forEach(el => {
-                    el.setAttribute("draggable", "true");
-                    el.classList.add("draggable");
-                });
-
-                // Clear feedback
-                feedbackBox.textContent = "";
-
-                updateStatsDisplay();
+                feedback.textContent = "";
+                if (hintBox) hintBox.style.display = "none";
             });
 
-            // Update stats box
-            function updateStatsDisplay() {
-                statsBox.innerHTML = `
-                    <strong>User Stats</strong><br>
-                    Clicks: ${stats.clicks}<br>
-                    Drags: ${stats.drags}<br>
-                    Drops: ${stats.drops}<br>
-                    Check Attempts: ${stats.checkAttempts}<br>
-                    Failed Attempts: ${stats.failedAttempts}<br>
-                    Time Taken: ${stats.totalTime > 0 ? stats.totalTime + 's' : '-'}
-                `;
+            if (hintBtn && hintBox) {
+                hintBtn.addEventListener("click", () => {
+                    hintBox.style.display = hintBox.style.display === "none" ? "block" : "none";
+                });
             }
-
-            updateStatsDisplay(); // Initialize on load
         });
 
-        // SCORM init if available
         if (typeof pipwerks !== "undefined" && pipwerks.SCORM) {
             pipwerks.SCORM.init();
         }
@@ -174,20 +140,11 @@ $(function () {
     $exeDeviceExport.init();
 });
 
-// SCORM-safe completion function
-function finishCourse(isFinalPackage = false) {
-    try {
-        if (typeof computeTime === "function") computeTime();
-
-        if (typeof pipwerks !== "undefined" && pipwerks.SCORM) {
-            pipwerks.SCORM.SetCompletionStatus("completed");
-            pipwerks.SCORM.SetSuccessStatus(isFinalPackage ? "passed" : "incomplete");
-            pipwerks.SCORM.save();
-            pipwerks.SCORM.quit();
-        } else {
-            console.warn("SCORM not available.");
-        }
-    } catch (err) {
-        console.error("Error in finishCourse:", err);
+function finishCourse() {
+    if (typeof pipwerks !== "undefined" && pipwerks.SCORM) {
+        pipwerks.SCORM.SetCompletionStatus("completed");
+        pipwerks.SCORM.SetSuccessStatus("passed");
+        pipwerks.SCORM.save();
+        pipwerks.SCORM.quit();
     }
 }
