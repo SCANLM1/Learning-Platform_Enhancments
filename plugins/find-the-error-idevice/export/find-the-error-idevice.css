@@ -1,18 +1,116 @@
-/* Anything included in the export folder will be exported if the iDevice is used. */
-.code-line {
-  display: block;
-  padding: 2px 6px;
-  font-family: monospace;
-  white-space: pre;
-  cursor: pointer;
+.find-error-idevice {
+    font-family: inherit;
+    padding: 10px;
 }
 
-.code-line.correct {
-  background-color: #d4edda;
-  border-left: 4px solid green;
+.find-error-idevice .instructions {
+    margin-bottom: 12px;
 }
 
-.code-line.incorrect {
-  background-color: #f8d7da;
-  border-left: 4px solid red;
+.find-error-idevice .code-snippet {
+    font-family: monospace;
+    white-space: pre-wrap;
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+}
+
+.find-error-idevice .code-line {
+    display: block;
+    padding: 4px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-left 0.2s ease;
+}
+
+.find-error-idevice .code-line:hover {
+    background-color: #eef6ff;
+}
+
+.find-error-idevice .code-line.selected {
+    background-color: #dceeff;
+    border-left: 4px solid #3399ff;
+}
+
+.find-error-idevice .code-line.correct {
+    background-color: #d4edda;
+    border-left: 4px solid green;
+}
+
+.find-error-idevice .code-line.incorrect {
+    background-color: #f8d7da;
+    border-left: 4px solid red;
+}
+
+.find-error-idevice .feedback {
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.find-error-idevice .hint-box {
+    margin-top: 10px;
+    font-style: italic;
+    background: #f0f0f0;
+    padding: 8px 12px;
+    border-left: 4px solid #999;
+    border-radius: 6px;
+}
+
+/* Button Layout */
+.find-error-idevice .button-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.find-error-idevice .button-left,
+.find-error-idevice .button-right {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+}
+
+.find-error-idevice .button-center {
+    justify-content: center;
+    flex: 1;
+    display: flex;
+}
+
+/* Buttons */
+.find-error-idevice .check-btn,
+.find-error-idevice .reset-btn,
+.find-error-idevice .hint-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.find-error-idevice .check-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+}
+
+.find-error-idevice .check-btn:hover {
+    background-color: #218838;
+}
+
+.find-error-idevice .reset-btn,
+.find-error-idevice .hint-btn {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.find-error-idevice .reset-btn:hover,
+.find-error-idevice .hint-btn:hover {
+    background-color: #e0e0e0;
 }

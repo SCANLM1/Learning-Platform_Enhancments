@@ -1,74 +1,107 @@
-/**
- * Find the Error iDevice - Export version
- *
- * Released under Attribution-ShareAlike 4.0 International License.
- * Based on template by Ignacio Gros (http://gros.es/)
- * Adapted for "Find the Error" plugin by Shubham Paudel
- *
- * License: http://creativecommons.org/licenses/by-sa/4.0/
- */
-
-// Define the main plugin object
-var $findErrorIdevice = {
-    // Initialization function called on page load
+var $findErrorExport = {
     init: function () {
-        // For each instance of this plugin on the page
-        $(".findErrorIdevice").each(function () {
-            var content = $(".iDevice_content", this);
-            if (content.length !== 1) return;
+        $(".find-error-idevice").each(function () {
+            const container = $(this);
+            const instructionsHTML = container.find(".find-error-instructions").html() || "";
+            const codeRaw = $("<div>").html(container.find(".find-error-code").html() || "").text();
+            const correctLine = parseInt(container.find(".find-error-correct").text());
+            const hintHTML = container.find(".find-error-hint").html() || "";
 
-            // Extract code block, correct line index, and feedback JSON from hidden inputs
-            const codeBlock = $("pre.code-block", content).text();
-            const correctLine = parseInt($("input.correctLine", content).val());
-            const feedbackJSON = $("input.feedbackData", content).val();
+            const lines = codeRaw.split('\n');
+            const uid = "fe_" + Date.now();
 
-            // Parse feedback JSON to an object
-            const feedbackMap = JSON.parse(feedbackJSON || '{}');
+            let codeHTML = `<pre class="code-snippet">`;
+            lines.forEach((line, i) => {
+                codeHTML += `<div class="code-line" data-line="${i}">${line}</div>`;
+            });
+            codeHTML += `</pre>`;
 
-            // Create a container to render the interactive code block
-            const displayContainer = $('<div class="code-block" style="white-space: pre;"></div>');
-            content.empty().append(displayContainer);
+            const layout = `
+                <div class="instructions">${instructionsHTML}</div>
+                ${codeHTML}
+                <div class="button-layout">
+                    <div class="button-left">
+                        ${hintHTML ? `<button class="hint-btn">Hint</button>` : ""}
+                        <button class="reset-btn">Reset</button>
+                    </div>
+                    <div class="button-center">
+                        <button class="check-btn">Check Answers</button>
+                    </div>
+                    <div class="button-right"></div>
+                </div>
+                <div class="feedback"></div>
+                ${hintHTML ? `<div class="hint-box" style="display:none;">${hintHTML}</div>` : ""}
+            `;
 
-            // Render the code block with interactive line selection
-            $findErrorIdevice.renderCode(codeBlock, correctLine, feedbackMap, displayContainer[0]);
-        });
-    },
+            container.html(layout);
 
-    // Function to render code lines and attach interactivity
-    renderCode: function (codeText, correctLine, feedbackMap, container) {
-        const lines = codeText.split('\n'); // Split the code into lines
+            const feedback = container.find(".feedback");
+            const checkBtn = container.find(".check-btn");
+            const resetBtn = container.find(".reset-btn");
+            const hintBtn = container.find(".hint-btn");
+            const hintBox = container.find(".hint-box");
+            const codeLines = container.find(".code-line");
 
-        lines.forEach((line, i) => {
-            const span = document.createElement('span'); // Create a span for each line
-            span.textContent = line;
-            span.classList.add('code-line');
-            span.dataset.line = i;
+            let selectedLine = null;
 
-            // When a line is clicked
-            span.addEventListener('click', function () {
-                // Clear previous highlights (red/green)
-                container.querySelectorAll('.code-line').forEach(el => {
-                    el.classList.remove('correct', 'incorrect');
-                });
+            // Line selection
+            codeLines.on("click", function () {
+                codeLines.removeClass("selected");
+                $(this).addClass("selected");
+                selectedLine = parseInt($(this).data("line"));
+            });
 
-                // Check if selected line is the correct one
-                if (i === correctLine) {
-                    span.classList.add('correct');
-                    alert("✅ That's correct!");
+            // Submit
+            checkBtn.on("click", function () {
+                if (selectedLine === null) {
+                    feedback.text("⚠️ Please select a line first.");
+                    return;
+                }
+
+                codeLines.removeClass("correct incorrect");
+
+                if (selectedLine === correctLine) {
+                    codeLines.eq(selectedLine).addClass("correct");
+                    feedback.text("✅ Correct! Well spotted.");
+                    if (typeof finishCourse === "function") finishCourse();
                 } else {
-                    span.classList.add('incorrect');
-                    const feedback = feedbackMap[i] || "❌ That's incorrect.";
-                    alert(`Oops! Line ${i + 1} was the wrong one: ${feedback}`);
+                    codeLines.eq(selectedLine).addClass("incorrect");
+                    feedback.text("❌ Not quite. Try again.");
                 }
             });
 
-            // Add the span to the container
-            container.appendChild(span);
+            // Reset
+            resetBtn.on("click", function () {
+                codeLines.removeClass("selected correct incorrect");
+                selectedLine = null;
+                feedback.text("");
+                if (hintBox.length) hintBox.hide();
+            });
+
+            // Hint
+            if (hintBtn && hintBox.length) {
+                hintBtn.on("click", function () {
+                    hintBox.toggle();
+                });
+            }
         });
+
+        // SCORM init
+        if (typeof pipwerks !== "undefined" && pipwerks.SCORM) {
+            pipwerks.SCORM.init();
+        }
     }
 };
 
-// Run the plugin once the DOM is ready
 $(function () {
-    $findErrorIdevice.init();
+    $findErrorExport.init();
 });
+
+function finishCourse() {
+    if (typeof pipwerks !== "undefined" && pipwerks.SCORM) {
+        pipwerks.SCORM.SetCompletionStatus("completed");
+        pipwerks.SCORM.SetSuccessStatus("passed");
+        pipwerks.SCORM.save();
+        pipwerks.SCORM.quit();
+    }
+}
