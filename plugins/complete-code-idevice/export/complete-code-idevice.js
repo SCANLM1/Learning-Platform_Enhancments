@@ -24,7 +24,7 @@ var $eXeCompleteCode = {
                         ${hintHTML ? `<button class="hint-btn">Hint</button>` : ""}
                     </div>
                     <div class="button-center">
-                        <button class="submit-btn">Submit</button>
+                        <button class="submit-btn">Check Answers</button>
                     </div>
                     <div class="button-right"></div>
                 </div>
