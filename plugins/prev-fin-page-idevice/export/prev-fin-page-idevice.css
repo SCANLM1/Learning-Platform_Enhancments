@@ -1,0 +1,18 @@
+.prevFinPageIdevice .iDevice_title,
+.prevFinPageIdevice label,
+.prevFinPageIdevice input[type="text"],
+.prevFinPageIdevice #prevFinPageForm {
+    display: none;
+}
+
+.previousPageButton, .finishButton {
+    padding: 10px 20px;
+    font-size: 20px;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.prevFinPageIdevice .iDevice_content {
+    text-align: center;
+}

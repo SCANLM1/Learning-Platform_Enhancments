@@ -1,0 +1,90 @@
+.code-formatting-activity-idevice {
+    font-family: inherit;
+    padding: 10px;
+}
+
+.code-formatting-activity-idevice .format-code-export-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.code-formatting-activity-idevice .instructions {
+    margin-bottom: 12px;
+}
+
+.code-formatting-activity-idevice .format-code-original,
+.code-formatting-activity-idevice .format-code-answer-editor {
+    font-family: monospace;
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+}
+
+.code-formatting-activity-idevice .feedback {
+    margin-top: 12px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.code-formatting-activity-idevice .button-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin: 10px 0;
+}
+
+.code-formatting-activity-idevice .button-left,
+.code-formatting-activity-idevice .button-center,
+.code-formatting-activity-idevice .button-right {
+    display: flex;
+    gap: 10px;
+    flex: 1;
+}
+
+.code-formatting-activity-idevice .button-center {
+    justify-content: center;
+}
+
+.code-formatting-activity-idevice .submit-btn {
+    padding: 10px 24px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.code-formatting-activity-idevice .submit-btn:hover {
+    background-color: #218838;
+}
+
+.code-formatting-activity-idevice .reset-btn,
+.code-formatting-activity-idevice .hint-btn {
+    padding: 6px 14px;
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.code-formatting-activity-idevice .reset-btn:hover,
+.code-formatting-activity-idevice .hint-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.code-formatting-activity-idevice .hint-box {
+    margin-top: 10px;
+    font-style: italic;
+    background: #f0f0f0;
+    padding: 8px 12px;
+    border-left: 4px solid #999;
+    border-radius: 6px;
+}

@@ -1,0 +1,20 @@
+.nextPageIdevice .iDevice_title,
+.nextPageIdevice label,
+.nextPageIdevice input[type="text"],
+.nextPageIdevice #nextPageForm {
+    display: none;
+}
+
+/* Style for the next page button */
+.nextPageButton {
+    padding: 10px 20px;
+    font-size: 20px;
+    cursor: pointer;
+    display: inline-block;
+    text-align: right;
+}
+
+/* Align the button to the right */
+.nextPageIdevice .iDevice_content {
+    text-align: right; /* Right-aligns the content, which includes the Next button */
+}
