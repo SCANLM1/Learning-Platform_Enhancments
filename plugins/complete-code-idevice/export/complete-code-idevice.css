@@ -59,10 +59,7 @@
     font-size: 15px;
 }
 
-/* Add margin above the button group */
-.complete-code-idevice .code-snippet {
-    margin-bottom: 20px; /* or more if you want extra space */
-}
+
 
 /* Layout container for buttons */
 .complete-code-idevice .button-layout {
@@ -107,4 +104,15 @@
 
 .complete-code-idevice .hint-btn:hover {
     background-color: #e0e0e0;
+}
+
+.complete-code-idevice .code-snippet {
+    font-family: monospace;
+    font-size: 14px;
+    white-space: pre-wrap;
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
 }

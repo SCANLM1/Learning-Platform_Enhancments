@@ -28,7 +28,7 @@ var $eXeCompleteCode = {
                     </div>
                     <div class="button-right"></div>
                 </div>
-    
+
                 ${hintHTML ? `<div class="hint-box" style="display:none; margin-top:10px;">${hintHTML}</div>` : ""}
             `;
             container.innerHTML = html;
@@ -65,7 +65,7 @@ var $eXeCompleteCode = {
                 }
             });
 
-            resetButton.addEventListener("click", function(){
+            resetButton.addEventListener("click", function () {
                 blanks.forEach(input => {
                     input.value = "";
                     input.style.border = "";
