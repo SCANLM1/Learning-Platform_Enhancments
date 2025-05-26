@@ -1,23 +1,33 @@
 var $exeDevice = {
-    init: function() {
+    init: function () {
         if ($("#finishButtonForm").length === 0) {
-            // HTML form for editing mode
-            var html = `
+            const html = `
                 <div id="finishButtonForm">
-                    <p>Clicking this button will mark the SCORM package as completed.</p>
+                    <div class="exe-idevice-info">
+                        This button will mark the SCORM package as complete when clicked.
+                    </div>
                 </div>
             `;
 
-            // Insert the form before the hidden textarea
-            var field = $("#activeIdevice textarea.jsContentEditor");
+            const field = $("#activeIdevice textarea.jsContentEditor");
             field.before(html);
+            field.hide();
+
+            // 🆕 Automatically clear the title field if it's still "Finish Button"
+            var titleField = $("#activeIdevice input[type='text']").eq(0);
+            if (titleField.val() === "Finish Button") titleField.val("").focus();
         }
     },
-    
-    save: function() {
-        // Return finish button without any extra attributes
-        return `<button class="finishButton">Finish</button>`;
+
+    save: function () {
+        const html = `
+            <div class="finish-button-idevice">
+                <div class="finish-button-wrapper">
+                    <button class="finish-btn">Finish</button>
+                </div>
+            </div>
+        `;
+        $("#activeIdevice textarea.jsContentEditor").val(html);
+        return html;
     }
 };
-
-
