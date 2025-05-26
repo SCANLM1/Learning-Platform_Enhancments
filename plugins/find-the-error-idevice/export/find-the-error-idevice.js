@@ -25,7 +25,7 @@ var $findErrorExport = {
                         <button class="reset-btn">Reset</button>
                     </div>
                     <div class="button-center">
-                        <button class="check-btn">Check Answers</button>
+                        <button class="check-btn">Submit</button>
                     </div>
                     <div class="button-right"></div>
                 </div>

@@ -17,7 +17,7 @@ var $exeDevice = {
                 <textarea id="hintInput" class="exe-html-editor" rows="2"></textarea></p>
                 
                 <div style="margin-top:20px;">
-                <strong>Preview with Correct Answer Line Highlighted:</strong>
+                <strong>Preview (Correct Answer Line Highlighted):</strong>
                 <div id="codePreview" class="code-block" style="margin-top:6px;"></div>
                 </div>
             </div>
