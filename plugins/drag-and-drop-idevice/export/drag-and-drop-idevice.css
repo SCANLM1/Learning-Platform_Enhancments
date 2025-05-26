@@ -1,6 +1,130 @@
-/* Anything included in the export folder will be exported if the iDevice is used. */
-.myExampleIdevice .iDevice_content{
-	background: url(example-idevice-logo.png) no-repeat right 0;
-	background-size: 70px auto;
-	padding-right: 90px;
+.dragdrop-idevice {
+    font-family: inherit;
+    padding: 10px;
+}
+
+.dragdrop-idevice .instructions {
+    margin-bottom: 12px;
+}
+
+.dragdrop-idevice .code-snippet,
+.dragdrop-idevice .dragdrop-question {
+    font-family: monospace;
+    white-space: pre-wrap;
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+}
+
+.dragdrop-idevice .draggable-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.dragdrop-idevice .draggable {
+    display: inline-block;
+    min-width: 80px;
+    padding: 6px 12px;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    cursor: grab;
+    user-select: none;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+}
+
+.dragdrop-idevice .drop-zone {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 80px;
+    min-height: 32px;
+    padding: 4px 6px;
+    border: 1px dashed #aaa;
+    margin: 0 5px;
+    border-radius: 4px;
+    background-color: #fff;
+    vertical-align: middle;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.dragdrop-idevice .feedback {
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.dragdrop-idevice .hint-box {
+    margin-top: 10px;
+    font-style: italic;
+    background: #f0f0f0;
+    padding: 8px 12px;
+    border-left: 4px solid #999;
+    border-radius: 6px;
+}
+
+/* Button Layout */
+.button-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.button-left,
+.button-center,
+.button-right {
+    display: flex;
+    gap: 10px;
+}
+
+.button-left,
+.button-right {
+    flex: 1;
+}
+
+.button-center {
+    justify-content: center;
+    flex: 1;
+}
+
+/* Buttons */
+.dragdrop-idevice .check-btn,
+.dragdrop-idevice .reset-btn,
+.dragdrop-idevice .hint-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.dragdrop-idevice .check-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+}
+
+.dragdrop-idevice .check-btn:hover {
+    background-color: #218838;
+}
+
+.dragdrop-idevice .reset-btn,
+.dragdrop-idevice .hint-btn {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.dragdrop-idevice .reset-btn:hover,
+.dragdrop-idevice .hint-btn:hover {
+    background-color: #e0e0e0;
 }

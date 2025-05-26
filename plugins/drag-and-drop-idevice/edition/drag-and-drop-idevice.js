@@ -1,194 +1,160 @@
-/**
- * Example iDevice (edition code)
- *
- * Released under Attribution-ShareAlike 4.0 International License.
- * Author: Ignacio Gros (http://gros.es/) for http://exelearning.net/
- *
- * License: http://creativecommons.org/licenses/by-sa/4.0/
- */
 var $exeDevice = {
-	
-	// For score (SCORM) options, see the games' loadSCOFunctions method
-	// i18n intructions: Always use _ as in "Information and instructions."
-	
-	// i18n
-	i18n : {
-		
-		name : _("Example"), // Title in config.xml
-		
-		// Optional translations
-		// Spanish
-		es : {
-			"Information and instructions." : "Información e instrucciones.",
-		}
-		
-	},
+    originalDraggables: [],
 
-	// Custom i18n (see Advanced mode - Language settings tab)
-	ci18n: {
-		"btn1": _("Click here to start"),
-		"btn2": _("Maximize")
-	},
-	
-	init : function(){
-		
-		// Create the form
-		var html = '\
-			<div id="myExampleForm">\
-				<div class="exe-idevice-info">'+_("Instructions")+'</div>\
-				<div class="exe-form-tab" title="Tab 1 title">\
-					<p>\
-						<label for="myExampleFieldA">Paragraph content:</label>\
-						<input type="text" id="myExampleFieldA">\
-					</p>\
-					<p>\
-						<label for="myExampleFieldB">Paragraph color:</label>\
-						<input type="text" id="myExampleFieldB" class="exe-color-picker">\
-					</p>\
-					<div>\
-						<label for="myExampleFieldC">TinyMCE example:</label>\
-						<textarea id="myExampleFieldC" class="exe-html-editor"></textarea>\
-					</div>\
-					<p>\
-						<label for="myExampleFieldD">File picker example:</label>\
-						<input type="text" id="myExampleFieldD" class="exe-file-picker">\
-					</p>\
-					<p>\
-						<label for="myExampleFieldE">Image picker example:</label>\
-						<input type="text" id="myExampleFieldE" class="exe-image-picker">\
-					</p>\
-				</div>\
-				<div class="exe-form-tab" title="Tab 2 title">\
-					<fieldset class="exe-fieldset exe-fieldset-closed">\
-						<legend><a href="#">Fieldset example</a></legend>\
-						<div>\
-							<p>...</p>\
-						</div>\
-					</fieldset>\
-				</div>\
-				' + $exeAuthoring.iDevice.gamification.common.getLanguageTab(this.ci18n) + '\
-			</div>\
-		';
-		
-		var field = $("#activeIdevice textarea.jsContentEditor");
-		
-		field.before(html); // Hidden TEXTAREA
-		
-		$exeAuthoring.iDevice.tabs.init("myExampleForm"); // Enable tabs
-		
-		this.getPreviousValues(field);
-		
-	},
-	save : function(){
-		
-		// This method will return the content to save (HTML, JSON...)
-		// That code will be placed in the hidden TEXTAREA
-		var res = "";
-		
-		// Paragraph content (with validation example)
-		var p = $("#myExampleFieldA").val();
-		if (p=="") {
-			eXe.app.alert("Please type the paragraph content.");
-			return false;
-		}
+    init: function () {
+        const html = `
+            <div id="dragDropAuthorForm">
+                <div class="exe-idevice-info">Use <code>[[ ]]</code> to mark blanks. Provide your sentence, instructions, and an optional hint.</div>
 
-		// Paragraph color
-		var pStyle = '';
-		var pC = $("#myExampleFieldB").val();
-		if (pC!="") {
-			pStyle = ' style="color:#'+pC+'"';
-		}		
-		
-		// Paragraph
-		res += "<p"+pStyle+">"+p+"</p>";
-		
-		// Rich text (TinyMCE)
-		var t = tinymce.editors[0].getContent();
-		if (t!="") {
-			res += '<div class="exe-text">';
-				res += t;
-			res += '</div>';	
-		}
-		
-		// File picker
-		var file = $("#myExampleFieldD").val();
-		if (file!="") {
-			var fileName = file;
-				fileName = fileName.split("_");
-				fileName = fileName[fileName.length-1];
-				fileName = fileName.split("/");
-				fileName = fileName[fileName.length-1];
-				if (fileName=="") fileName = "Fichero adjunto";
-			res += '<p class="exe-attachment-file"><a href="'+file+'">'+fileName+'</a></p>';
-		}
-		
-		// Image picker
-		var img = $("#myExampleFieldE").val();
-		if (img!="") {
-			res += '<p class="exe-attachment-img"><img src="'+img+'" alt=""></p>';
-		}
-		
-		// Buttons with custom text (Advanced mode - Language settings tab
-		var btn1 = $("#ci18n_btn1").val();
-		if (btn1=="") btn1 = this.ci18n.btn1;
-		var btn2 = $("#ci18n_btn2").val();
-		if (btn2=="") btn2 = this.ci18n.btn2;
-		
-		res += '<p class="exe-custom-btns">\
-			<button type="button">'+btn1+'</button>\
-			<button type="button">'+btn2+'</button>\
-		</p>';
-		
-		// HTML to save
-		return res;
-	},
-	getPreviousValues : function(field){
-		
-		var content = field.val();
-		if (content != '') {
-			
-			// Find the previous values in the HTML you saved
-			var wrapper = $("<div></div>");
-				wrapper.html(content);
-			
-			// Paragraph
-			var p = $("p",wrapper).eq(0);
-			
-			$("#myExampleFieldA").val(p.text()); // Contenido del párrafo
-			
-			// Paragraph color
-			var pC = p.attr("style");
-			if (typeof(pC)=='string'&&pC.indexOf("color:#")==0) pC = pC.replace("color:#","");
-			$("#myExampleFieldB").val(pC);
-			
-			// TinyMCE
-			var t = $("div.exe-text",wrapper).eq(0);
-			if (t.length==1) {
-				$("#myExampleFieldC").val(t.html());
-			}
-			
-			// Attached file (file picker)
-			var a = $("p.exe-attachment-file a",wrapper).eq(0);
-			if (a.length==1) {
-				$("#myExampleFieldD").val(a.attr("href"));
-			}
-			
-			// Image (image picker)
-			var a = $("p.exe-attachment-img img",wrapper).eq(0);
-			if (a.length==1) {
-				$("#myExampleFieldE").val(a.attr("src"));
-			}
-			
-			// Buttons
-			var btns = $("p.exe-custom-btns button",wrapper);
-			if (btns.length==2) {
-				var btn1 = btns.eq(0).text();
-				var btn2 = btns.eq(1).text();
-				$("#ci18n_btn1").val(btn1);
-				$("#ci18n_btn2").val(btn2);
-			}
-			
-		}
-		
-	}
-}
+                <p><label for="instructionsInput">Instructions:</label>
+                <textarea id="instructionsInput" class="exe-html-editor" rows="3"></textarea></p>
+
+                <p><label for="questionInput">Sentence with Blanks:</label>
+                <textarea id="questionInput" class="exe-html-editor" rows="6"></textarea></p>
+
+                <p><label for="hintInput">Optional Hint:</label>
+                <textarea id="hintInput" class="exe-html-editor" rows="2"></textarea></p>
+
+                <button type="button" id="generateDragDrop">Generate Drag and Drop</button>
+                <button type="button" id="resetDragDrop">Reset Elements</button>
+
+                <div id="dragDropArea" style="margin-top: 12px;"></div>
+            </div>
+        `;
+
+        const field = $("#activeIdevice textarea.jsContentEditor");
+        field.before(html);
+        field.hide();
+        $exeAuthoring.iDevice.tabs.init("dragDropAuthorForm");
+
+        this.loadPreviousValues();
+
+        setTimeout(() => {
+            if (typeof tinyMCE !== "undefined" && eXe.editorSettings) {
+                tinyMCE.init(Object.assign({}, eXe.editorSettings, {
+                    selector: '.exe-html-editor'
+                }));
+            }
+        }, 0);
+    },
+
+    save: function () {
+        const instructions = tinyMCE.get("instructionsInput")?.getContent() || "";
+        const hint = tinyMCE.get("hintInput")?.getContent() || "";
+        const sentence = tinyMCE.get("questionInput")?.getContent() || ""; // ✅ Preserves formatting
+
+        const blankMatches = sentence.match(/\[\[(.*?)\]\]/g);
+
+        if (!sentence.trim()) {
+            alert("You must enter a sentence with at least two blanks marked with [[ ]].");
+            return false;
+        }
+
+        if (!blankMatches || blankMatches.length < 2) {
+            alert("You must define at least two blanks using [[ ]] in the sentence.");
+            return false;
+        }
+
+        const valueCounts = {};
+        blankMatches.forEach(m => {
+            const val = m.replace(/\[\[|\]\]/g, '').trim();
+            valueCounts[val] = (valueCounts[val] || 0) + 1;
+        });
+
+        const duplicates = Object.entries(valueCounts).filter(([_, count]) => count > 1);
+        if (duplicates.length > 0) {
+            const dupList = duplicates.map(([val]) => `'${val}'`).join(", ");
+            alert(`⚠️ Each [[word]] must be unique. You used ${dupList} more than once.\nPlease rephrase so each answer is only used once.`);
+            return false;
+        }
+
+        const html = `
+            <div class="dragdrop-idevice">
+                <div class="dragdrop-instructions">${instructions}</div>
+                <div class="dragdrop-hint" style="display:none;">${hint}</div>
+                <div class="dragdrop-question" style="display:none;">${sentence}</div>
+                <span class="trigger-dragdrop" style="display:none;"></span>
+            </div>
+        `;
+
+        $("#activeIdevice textarea.jsContentEditor").val(html);
+        return html;
+    },
+
+    loadPreviousValues: function () {
+        const field = $("#activeIdevice textarea.jsContentEditor");
+        const content = field.val();
+        if (!content) return;
+
+        const wrapper = $('<div>').html(content);
+        $("#instructionsInput").val(wrapper.find(".dragdrop-instructions").html() || "");
+        $("#hintInput").val(wrapper.find(".dragdrop-hint").html() || "");
+        $("#questionInput").val(wrapper.find(".dragdrop-question").html() || "");
+    },
+
+    processInput: function (inputText) {
+        const matches = [...inputText.matchAll(/\[\[(.*?)\]\]/g)];
+        let lastIndex = 0;
+        const uid = 'dd' + Date.now();
+
+        $("#dragDropArea").empty();
+        this.originalDraggables = [];
+
+        let dragDropHtml = `<div class="dragdrop-idevice" data-uid="${uid}"><p>`;
+        let draggableItems = [];
+
+        matches.forEach((match, index) => {
+            const textBefore = inputText.substring(lastIndex, match.index);
+            const answer = match[1];
+            const dragId = `${uid}_draggableAnswer${index}`;
+
+            dragDropHtml += `${textBefore}<span class="drop-zone" data-correct-answer="${dragId}">&#8203;</span>`; // ✅ Keeps space visible when empty
+            draggableItems.push(`<div class="draggable" draggable="true" id="${dragId}">${answer}</div>`);
+
+            this.originalDraggables.push(dragId);
+            lastIndex = match.index + match[0].length;
+        });
+
+        dragDropHtml += inputText.substring(lastIndex) + '</p>';
+        dragDropHtml += `<div class="draggable-container" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">${draggableItems.join("")}</div></div>`;
+
+        $("#dragDropArea").html(dragDropHtml);
+        this.setupDragAndDrop();
+    },
+
+    resetDraggables: function () {
+        const container = $(".draggable-container");
+        const items = container.children(".draggable").get();
+
+        for (let i = items.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [items[i], items[j]] = [items[j], items[i]];
+        }
+
+        container.empty().append(items);
+    },
+
+    setupDragAndDrop: function () {
+        $(document).off("dragstart.drag").on("dragstart.drag", ".draggable", function (e) {
+            e.originalEvent.dataTransfer.setData("text/plain", e.target.id);
+        });
+
+        $(document).off("dragover.drag drop.drag");
+
+        $(document).on("dragover.drag", ".drop-zone", function (e) {
+            e.preventDefault();
+        });
+
+        $(document).on("drop.drag", ".drop-zone", function (e) {
+            e.preventDefault();
+            const data = e.originalEvent.dataTransfer.getData("text/plain");
+            const $dragged = $("#" + data);
+            const targetZone = $(e.target).closest(".drop-zone");
+
+            if ($dragged.length && targetZone.length) {
+                targetZone.html(""); // Clear zero-width space too
+                targetZone.append($dragged);
+            }
+        });
+    }
+};

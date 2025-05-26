@@ -1,3 +1,52 @@
-#myExampleForm label{
-	display:block;
+.dragAndDropIdevice .iDevice_title,
+.dragAndDropIdevice label,
+.dragAndDropIdevice input[type="text"],
+.dragAndDropIdevice #nextPageForm {
+    display: none;
 }
+
+/* Style for the next page button */
+.dragAndDropIdevice {
+    padding: 10px 20px;
+    font-size: 20px;
+    cursor: pointer;
+    display: inline-block;
+    text-align: right;
+}
+
+/* Align the button to the right */
+.dragAndDropIdevice .iDevice_content {
+    text-align: right; /* Right-aligns the content, which includes the Next button */
+}
+.draggable {
+    padding: 5px 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none; /* Prevents the text within from being selectable, which improves UX during dragging */
+}
+
+.drop-zone {
+    display: inline-block;
+    min-width: 100px;
+    height: 20px;
+    vertical-align: middle;
+    border: 1px dashed #ccc;
+    margin: 0 5px;
+    padding: 3px 10px;
+}
+
+
+.correct {
+    background-color: green;
+    color: white;
+}
+
+.incorrect {
+    background-color: red;
+    color: white;
+}
+
+
+
