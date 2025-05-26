@@ -4,17 +4,17 @@ To ensure your SCORM packages properly track completion in **TalentLMS**, especi
 
 ---
 
-## File Location
+## 📁 File Location
 
 ```plaintext
 C:\Program Files (x86)\exe\scripts\SCOFunctions.js
 ```
 
-> Admin rights may be needed to edit this file on Windows.
+> ⚠️ This path may vary depending on your installation directory. Admin rights are typically required to modify this file.
 
 ---
 
-## Modified Functions to Add or Replace
+## 🔧 Modified Functions to Add or Replace
 
 ### 1. Replace `unloadPage()` with:
 
@@ -56,9 +56,9 @@ function finishCourse() {
 
 ---
 
-### 3. Optional: Add navigation functions
+### 3. (Optional) Add Navigation Helpers
 
-These help navigate between SCORM pages:
+If using navigation buttons:
 
 ```javascript
 function goBack() {
@@ -72,28 +72,35 @@ function goForward() {
 
 ---
 
-## Final Step: Restart eXeLearning
+## ✅ Final Step: Clear Cache and Restart eXeLearning
 
-Once you've saved your changes, restart the eXeLearning desktop app to apply the new functions.
+To ensure the new functions are applied:
 
----
+1. Press `Win + R`, type `%APPDATA%\exe`, and delete all contents of that folder
+2. Restart the eXeLearning application
 
-##  Why This Is Important
-
-By default, SCORM packages created with eXeLearning **don’t notify the LMS** that a module has been completed when embedded. These changes ensure:
-
--  Proper completion and success tracking
--  No learners get "stuck" in a module
--  TalentLMS receives accurate progress data
+This ensures the modified `SCOFunctions.js` is correctly loaded during export.
 
 ---
 
-##  How to Test Your Fix
+## 📌 Why This Fix Matters
 
-1. Open eXeLearning
-2. Create a test SCORM activity
-3. Export as SCORM 1.2
-4. Upload to TalentLMS and complete the activity
-5. Verify that it is **marked complete** on the LMS dashboard
+By default, SCORM packages created with eXeLearning **don’t notify the LMS of completion** when embedded. These changes:
+
+- Trigger SCORM completion programmatically
+- Prevent users from getting “stuck” in incomplete status
+- Ensure TalentLMS receives accurate progress and success status
+
+---
+
+## 🧪 How to Verify the Fix
+
+1. Open eXeLearning and insert an interactive plugin (e.g., Complete the Code)
+2. Export the project as **SCORM 1.2**
+3. Upload the `.zip` to TalentLMS
+4. Complete the activity in embedded view
+5. Open the **LMS report** and verify that the module is marked as **complete and passed**
+
+> You only need to apply this fix once per machine installation unless `SCOFunctions.js` is overwritten during an update.
 
 Happy learning!
