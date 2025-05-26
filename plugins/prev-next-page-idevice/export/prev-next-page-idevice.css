@@ -1,0 +1,59 @@
+.prevNextPageIdevice {
+    font-family: inherit;
+    padding: 10px;
+}
+
+.prevNextPageIdevice .iDevice_title,
+.prevNextPageIdevice label,
+.prevNextPageIdevice input[type="text"],
+.prevNextPageIdevice #prevNextPageForm {
+    display: none !important;
+}
+
+.button-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+}
+
+.button-left {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.button-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Styled Buttons */
+.prevNextButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease;
+}
+
+.prevNextButton.previous {
+    background-color: #6c757d;
+    color: white;
+}
+
+.prevNextButton.previous:hover {
+    background-color: #5a6268;
+}
+
+.prevNextButton.next {
+    background-color: #28a745;
+    color: white;
+}
+
+.prevNextButton.next:hover {
+    background-color: #218838;
+}

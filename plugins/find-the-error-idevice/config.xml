@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<idevice>
+  <title>Find the Error</title> <!-- Displayed name in eXeLearning -->
+  <css-class>findError</css-class> <!-- CSS class for plugin -->
+  <category>Assessment</category> <!-- Tab group in eXe -->
+
+  <fields>
+    <!-- Code snippet entered by the author -->
+    <field name="codeInput" type="textarea" label="Code Block" />
+
+    <!-- Correct line number (zero-indexed) -->
+    <field name="correctLine" type="string" label="Correct Line" hidden="true" />
+
+    <!-- Feedback for incorrect lines in JSON -->
+    <field name="feedbackData" type="string" label="Feedback per Line (JSON)" hidden="true" />
+  </fields>
+</idevice>

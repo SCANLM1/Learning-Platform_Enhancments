@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<idevice>
+    <title>Finish Button</title>
+    <css-class>finish-button-idevice</css-class>
+    <category>Navigation</category>
+</idevice>

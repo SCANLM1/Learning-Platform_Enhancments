@@ -1,0 +1,37 @@
+.nextPageIdevice {
+    font-family: inherit;
+    padding: 10px;
+    text-align: right;
+}
+
+.nextPageIdevice .iDevice_title,
+.nextPageIdevice label,
+.nextPageIdevice input[type="text"],
+.nextPageIdevice #nextPageForm {
+    display: none !important;
+}
+
+.button-layout {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+/* Styled consistent button */
+.nextPageButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.nextPageButton:hover {
+    background-color: #218838;
+}
