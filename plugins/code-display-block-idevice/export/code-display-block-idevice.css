@@ -1,0 +1,41 @@
+.code-display-block-idevice {
+    font-family: inherit;
+    padding: 10px;
+}
+
+.code-display-block-idevice .code-display-instructions {
+    margin-bottom: 10px;
+}
+
+.code-display-block-idevice .CodeMirror {
+    background: #272822;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.button-layout {
+    display: flex;
+    justify-content: center;
+    margin-top: 12px;
+}
+
+.button-center {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.submit-btn {
+    padding: 10px 24px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: #218838;
+}

@@ -1,3 +1,40 @@
-#myExampleForm label{
-	display:block;
+#findErrorEditor {
+    margin-top: 10px;
+    font-family: inherit;
+}
+
+#findErrorEditor label {
+    display: block;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 4px;
+}
+
+#findErrorEditor textarea,
+#findErrorEditor input[type="number"] {
+    width: 100%;
+    padding: 6px;
+    font-family: monospace;
+    font-size: 14px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+#findErrorEditor .code-block {
+    border: 1px solid #ccc;
+    padding: 10px;
+    background: #f9f9f9;
+    font-family: monospace;
+    font-size: 14px;
+    white-space: pre;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+#findErrorEditor .code-line {
+    display: block;
+    padding: 4px 6px;
+    margin-bottom: 1px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
 }

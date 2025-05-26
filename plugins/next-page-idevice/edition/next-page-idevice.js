@@ -1,45 +1,54 @@
 var $exeDevice = {
-    init: function() {
-        // Avoid adding multiple forms
+    init: function () {
         if ($("#nextPageForm").length === 0) {
-            // HTML form for editing mode
-            var html = `
+            const html = `
                 <div id="nextPageForm">
-                    <label for="nextPageURL">What is your next page URL?</label>
+                    <div class="exe-idevice-info">
+                        Enter the URL of the next page you want to navigate to.
+                    </div>
+                    <label for="nextPageURL">Next Page URL:</label>
                     <input type="text" id="nextPageURL" placeholder="e.g., page2.html">
                 </div>
             `;
 
-            // Insert the form before the hidden textarea
-            var field = $("#activeIdevice textarea.jsContentEditor");
+            const field = $("#activeIdevice textarea.jsContentEditor");
             field.before(html);
+            field.hide();
 
-            // Load previous values if they exist
             this.getPreviousValues(field);
+
+            // ✅ Auto-clear the title if it matches default
+            setTimeout(function () {
+                const titleField = $("#activeIdevice input[type='text']").eq(0);
+                if (titleField.val() === "Next Page Button") {
+                    titleField.val("").focus();
+                }
+            }, 100);
         }
     },
 
-    save: function() {
-        // Get the input URL, convert to lowercase, and trim whitespace
-        var nextPage = $("#nextPageURL").val().trim().toLowerCase();
+    save: function () {
+        const nextPage = $("#nextPageURL").val().trim().toLowerCase();
         if (nextPage === "") {
             eXe.app.alert("Please provide the next page URL.");
             return false;
         }
 
-        // Save button with a data attribute for the URL
-        return `<button class="nextPageButton" data-url="${nextPage}">Next</button>`;
+        return `
+            <div class="nextPageIdevice">
+                <div class="button-layout">
+                    <button class="nextPageButton" data-url="${nextPage}">Next</button>
+                </div>
+            </div>
+        `;
     },
 
-    getPreviousValues: function(field) {
-        var content = field.val();
-        if (content !== '') {
-            var wrapper = $("<div></div>");
-            wrapper.html(content);
+    getPreviousValues: function (field) {
+        const content = field.val();
+        if (!content) return;
 
-            // Extract the next page URL from the data attribute
-            var nextPage = wrapper.find(".nextPageButton").data("url");
-            $("#nextPageURL").val(nextPage);
-        }
+        const wrapper = $("<div>").html(content);
+        const nextPage = wrapper.find(".nextPageButton").data("url");
+        $("#nextPageURL").val(nextPage || "");
     }
 };

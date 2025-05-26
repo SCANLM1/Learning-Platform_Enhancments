@@ -7,10 +7,10 @@ function navigateToPage(pageUrl) {
         pipwerks.SCORM.SetCompletionStatus("incomplete");
         pipwerks.SCORM.save();
     } else {
-        console.warn("SCORM API not available. Unable to set completion status.");
+        console.warn("SCORM API not available.");
     }
 
-    window.location.href = pageUrl;  // Navigate to the specified URL
+    window.location.href = pageUrl;
 }
 
 function finishCourse() {
@@ -19,24 +19,18 @@ function finishCourse() {
     }
 
     if (typeof pipwerks !== "undefined" && pipwerks.SCORM) {
-        // Set the SCORM package completion status
         pipwerks.SCORM.SetCompletionStatus("completed");
-
-
-
+        pipwerks.SCORM.SetSuccessStatus("passed");
         pipwerks.SCORM.save();
         pipwerks.SCORM.quit();
-
     } else {
-        console.warn("SCORM API not available. Unable to set completion status.");
+        console.warn("SCORM API not available.");
     }
-
 }
 
-// Initialization for preview/published mode
-$(function() {
-    $(".previousPageButton").on("click", function() {
-        var pageUrl = $(this).data("url");
+$(function () {
+    $(".previousPageButton").on("click", function () {
+        const pageUrl = $(this).data("url");
         if (pageUrl) {
             navigateToPage(pageUrl);
         } else {
@@ -44,7 +38,10 @@ $(function() {
         }
     });
 
-    $(".finishButton").on("click", function() {
+    $(".finishButton").on("click", function () {
         finishCourse();
     });
+
+    // 🆕 Hide iDevice title in export
+    $(".prevFinPageIdevice .iDevice_title").hide();
 });

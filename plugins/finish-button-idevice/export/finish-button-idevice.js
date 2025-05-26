@@ -4,22 +4,20 @@ function finishCourse() {
     }
 
     if (typeof pipwerks !== "undefined" && pipwerks.SCORM) {
-        // Mark the SCORM package as completed
         pipwerks.SCORM.SetCompletionStatus("completed");
-
-        
+        pipwerks.SCORM.SetSuccessStatus("passed");
         pipwerks.SCORM.save();
         pipwerks.SCORM.quit();
-
-        
     } else {
         console.warn("SCORM API not available. Unable to set completion status.");
     }
 }
 
-// Initialization for preview/published mode
-$(function() {
-    $(".finishButton").on("click", function() {
+$(function () {
+    $(".finish-btn").on("click", function () {
         finishCourse();
     });
+
+    // Hide the iDevice title in exported view
+    $(".finish-button-idevice .iDevice_title").hide();
 });
