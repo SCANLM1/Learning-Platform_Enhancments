@@ -4,7 +4,6 @@ function navigateToPage(pageUrl) {
     }
 
     if (typeof pipwerks !== "undefined" && pipwerks.SCORM) {
-        // Ensure status is set to "incomplete" without marking it complete
         pipwerks.SCORM.SetCompletionStatus("incomplete");
         pipwerks.SCORM.save();
     } else {
@@ -14,14 +13,16 @@ function navigateToPage(pageUrl) {
     window.location.href = pageUrl;
 }
 
-// Initialization for the preview/published mode
-$(function() {
-    $(".nextPageButton").on("click", function() {
-        var pageUrl = $(this).data("url");
+$(function () {
+    $(".nextPageButton").on("click", function () {
+        const pageUrl = $(this).data("url");
         if (pageUrl) {
             navigateToPage(pageUrl);
         } else {
             console.error("No URL specified for next page.");
         }
     });
+
+    // 🆕 Hide title in export view
+    $(".nextPageIdevice .iDevice_title").hide();
 });
