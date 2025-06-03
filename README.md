@@ -8,6 +8,17 @@ The initiative was part of AUT’s Research and Development Project (COMP703), l
 
 ---
 
+## Video Demonstrations
+
+For quick guidance on setup and usage, refer to the following video walkthroughs:
+
+- **eXeLearning Installation Guide**  
+  📹 [Watch on YouTube](https://youtu.be/32-0Cre7fyc)
+
+- **iDevice Demo Guide**  
+  📹 [Watch on YouTube](https://youtu.be/JwCrO7P1d20)
+
+
 ## Project Objectives
 
 -  Improve engagement through interactive SCORM activities  
