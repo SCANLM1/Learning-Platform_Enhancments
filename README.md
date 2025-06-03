@@ -65,11 +65,12 @@ Each iDevice is stored in its own folder and belongs to one of the following cat
 /scripts
   └── SCOFunctions.js
 /docs
-  ├── Tool Evaluation Report.docx
-  ├── Manual Testing Procedure.docx
-  ├── tutorial_course_script.docx
-  └── Project Information.docx
+  ├── Tool Evaluation Report.pdf
+  ├── Manual Testing Procedure.pdf
+  ├── Development Environment Flow Diagram.pdf
+  └── Important Information and Setup Guide.pdf
 /guides
+  ├── LMS Upload SCORM packages - New iDevice User Manual.zip
   └── SCOFunctions-Fixes.md
 ```
 
